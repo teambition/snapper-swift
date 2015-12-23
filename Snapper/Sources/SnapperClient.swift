@@ -20,6 +20,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
     public var options: Set<SnapperClientOption>
     public var reconnects = true
     public var reconnectWait = 10
+    var session: NSURLSession
     public var sid: String? {
         return engine?.sid
     }
@@ -46,7 +47,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
      */
     public init(socketURL: String, options: Set<SnapperClientOption> = []) {
         self.options = options
-        
+        self.session = NSURLSession()
         if socketURL["https://"].matches().count != 0 {
             self.options.insertIgnore(.Secure(true))
         }
@@ -290,12 +291,39 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         }
     }
     
+    /**
+     replay
+     
+     - parameter id: message id
+     */
     public func replay(id: Int) {
+        
+        guard status == .Connected else {
+            handleEvent("error", data: ["Tried emitting when not connected"], isInternalMessage: true)
+            return
+        }
+        
         let dict = ["id":id,"result":"OK","jsonrpc":"2.0"]
         let data = try! NSJSONSerialization.dataWithJSONObject(dict, options: [])
         let json = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
         engine?.write(json, withType: .Message, withData: [])
     }
+
+    
+    /**
+     join the project to receive the project notification
+     */
+    public func join(projectID: String) {
+        joinRequest(projectID)
+    }
+
+    func joinRequest(projectID: String) {
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.teambition.com/api/projects/\(projectID)/subscribe")!)
+        request.HTTPMethod = "POST"
+        let dataTask = session.dataTaskWithRequest(request)
+        dataTask.resume()
+    }
+
     /**
      Tries to reconnect to the server.
      */
