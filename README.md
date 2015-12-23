@@ -62,7 +62,7 @@ Carthage
 -----------------
 Add this line to your `Cartfile`:
 ```
-github "socketio/socket.io-client-swift" ~> 4.1.6 # Or latest version
+github "teambition/Snapper-swift"
 ```
 
 Run `carthage update --platform ios,macosx`.
@@ -76,7 +76,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'Socket.IO-Client-Swift', '~> 4.1.6' # Or latest version
+pod 'Snapper-swift'
 ```
 
 Install pods:
@@ -91,23 +91,6 @@ Swift:
 ```swift
 import Socket_IO_Client_Swift
 ```
-
-Objective-C:
-
-```Objective-C
-#import <Socket_IO_Client_Swift/Socket_IO_Client_Swift-Swift.h>
-```
-
-CocoaSeeds
------------------
-
-Add this line to your `Seedfile`:
-
-```
-github "socketio/socket.io-client-swift", "v4.1.6", :files => "SocketIOClientSwift/*.swift" # Or latest version
-```
-
-Run `seed install`.
 
 
 ##API
