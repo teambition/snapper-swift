@@ -1,0 +1,22 @@
+//
+//  SnapperMessage.swift
+//  Snapper
+//
+//  Created by ChenHao on 12/23/15.
+//  Copyright © 2015 HarriesChen. All rights reserved.
+//
+
+import UIKit
+
+public class SnapperMessage: NSObject {
+    public let message: String!
+    public let items: NSArray?
+    override public var description: String {
+        return "SocketAnyEvent: Event: \(message) items: \(items ?? nil)"
+    }
+    
+    init(message: String, items: NSArray?) {
+        self.message = message
+        self.items = items
+    }
+}
