@@ -290,6 +290,12 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         }
     }
     
+    public func replay(id: Int) {
+        let dict = ["id":id,"result":"OK","jsonrpc":"2.0"]
+        let data = try! NSJSONSerialization.dataWithJSONObject(dict, options: [])
+        let json = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+        engine?.write(json, withType: .Message, withData: [])
+    }
     /**
      Tries to reconnect to the server.
      */
