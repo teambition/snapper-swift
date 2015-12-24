@@ -5,8 +5,7 @@
 //  Created by ChenHao on 12/23/15.
 //  Copyright © 2015 HarriesChen. All rights reserved.
 //
-
-import UIKit
+import Foundation
 
 public class SnapperMessage: NSObject {
     public let id: Int!

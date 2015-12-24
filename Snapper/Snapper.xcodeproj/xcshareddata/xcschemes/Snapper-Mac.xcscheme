@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E5A2B8F21C2A4C7B00D95012"
-               BuildableName = "Snapper.framework"
-               BlueprintName = "Snapper"
+               BlueprintIdentifier = "E5C5F2351C2B9833008D1286"
+               BuildableName = "Snapper-Mac.framework"
+               BlueprintName = "Snapper-Mac"
                ReferencedContainer = "container:Snapper.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E5A2B8F21C2A4C7B00D95012"
-            BuildableName = "Snapper.framework"
-            BlueprintName = "Snapper"
+            BlueprintIdentifier = "E5C5F2351C2B9833008D1286"
+            BuildableName = "Snapper-Mac.framework"
+            BlueprintName = "Snapper-Mac"
             ReferencedContainer = "container:Snapper.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E5A2B8F21C2A4C7B00D95012"
-            BuildableName = "Snapper.framework"
-            BlueprintName = "Snapper"
+            BlueprintIdentifier = "E5C5F2351C2B9833008D1286"
+            BuildableName = "Snapper-Mac.framework"
+            BlueprintName = "Snapper-Mac"
             ReferencedContainer = "container:Snapper.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
