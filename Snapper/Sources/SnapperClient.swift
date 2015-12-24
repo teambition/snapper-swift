@@ -8,6 +8,7 @@
 
 
 import Foundation
+import CoreFoundation
 
 public final class SnapperClient: NSObject, SocketEngineClient {
     public let socketURL: String
@@ -21,6 +22,9 @@ public final class SnapperClient: NSObject, SocketEngineClient {
     public var reconnects = true
     public var reconnectWait = 10
     var session: NSURLSession
+    var subscribeURL: String
+    var subscribeToken: String
+    
     public var sid: String? {
         return engine?.sid
     }
@@ -43,11 +47,13 @@ public final class SnapperClient: NSObject, SocketEngineClient {
     var waitingData = [SnapperPacket]()
     
     /**
-     Type safe way to create a new SocketIOClient. opts can be omitted
+     Type safe way to create a new Snapper. opts can be omitted
      */
-    public init(socketURL: String, options: Set<SnapperClientOption> = []) {
+    public init(socketURL: String, options: Set<SnapperClientOption> = [], subscribeURL: String = "", subscribeToken: String = "") {
         self.options = options
-        self.session = NSURLSession()
+        self.session = NSURLSession.sharedSession()
+        self.subscribeURL = subscribeURL
+        self.subscribeToken = subscribeToken
         if socketURL["https://"].matches().count != 0 {
             self.options.insertIgnore(.Secure(true))
         }
@@ -314,13 +320,27 @@ public final class SnapperClient: NSObject, SocketEngineClient {
      join the project to receive the project notification
      */
     public func join(projectID: String) {
+        guard self.subscribeToken != ""else {
+            DefaultSocketLogger.Logger.log("subscribeToken must not be empty", type: logType)
+            return
+        }
+        guard self.subscribeURL != "" else {
+            DefaultSocketLogger.Logger.log("subscribeURL must not be empty", type: logType)
+            return
+        }
         joinRequest(projectID)
     }
 
     func joinRequest(projectID: String) {
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.teambition.com/api/projects/\(projectID)/subscribe")!)
+        let url = NSURL(string: "\(self.subscribeURL)/api/projects/\(projectID)/subscribe")!
+        let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "POST"
-        let dataTask = session.dataTaskWithRequest(request)
+        let params = "consumerId=\(self.sid!)"
+        request.HTTPBody = params.dataUsingEncoding(NSUTF8StringEncoding)
+        request.addValue("OAuth2 \(self.subscribeToken)", forHTTPHeaderField: "Authorization")
+        let dataTask = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
+            print(response)
+        }
         dataTask.resume()
     }
 

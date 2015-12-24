@@ -11,7 +11,7 @@ import Snapper
 
 class ViewController: UIViewController {
 
-    let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.Log(false), .ConnectParams(["token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1NWM4MTdmOGU3MTVmYTk5MmExOTNlOTkiLCJleHAiOjE0NTA5MzYwODd9.Y9gk3d3YTE3loyUxWSxiVJzHjhe12bn5O5qGsuJ89JE"])])
+    let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.Log(false), .ConnectParams(["token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1NWM4MTdmOGU3MTVmYTk5MmExOTNlOTkiLCJleHAiOjE0NTA5MzYwODd9.Y9gk3d3YTE3loyUxWSxiVJzHjhe12bn5O5qGsuJ89JE"])], subscribeURL:"https://www.teambition.com",subscribeToken:"ff")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +34,7 @@ class ViewController: UIViewController {
             print(message.items)
             self.snapper.replay(message.id)
         }
+        snapper.join("56333d241aa92ac80a957844")
     }
 
     override func didReceiveMemoryWarning() {
