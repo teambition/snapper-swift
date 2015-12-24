@@ -51,7 +51,7 @@
 		E50A0B8E1C2A51B4000C38AC /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		E539A58C1C2A67B600431A9E /* SnapperMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapperMessage.swift; sourceTree = "<group>"; };
 		E539A58E1C2A696200431A9E /* SnapperParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapperParser.swift; sourceTree = "<group>"; };
-		E5A2B8F31C2A4C7B00D95012 /* SnapperiOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapperiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5A2B8F31C2A4C7B00D95012 /* Snapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Snapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5A2B8F61C2A4C7B00D95012 /* Snapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Snapper.h; sourceTree = "<group>"; };
 		E5A2B8F81C2A4C7B00D95012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E5A2B8FF1C2A4CB600D95012 /* SocketStringReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketStringReader.swift; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 		E5C599891C2A4F8300CEEC45 /* SnapperEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapperEvent.swift; sourceTree = "<group>"; };
 		E5C5998B1C2A4FFC00CEEC45 /* SnapperEventHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapperEventHandler.swift; sourceTree = "<group>"; };
 		E5C5998D1C2A508A00CEEC45 /* SnapperPacket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapperPacket.swift; sourceTree = "<group>"; };
-		E5C5F2361C2B9833008D1286 /* SnapperOSX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapperOSX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5C5F2361C2B9833008D1286 /* Snapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Snapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5C5F2381C2B9833008D1286 /* Snapper-Mac.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Snapper-Mac.h"; sourceTree = "<group>"; };
 		E5C5F23A1C2B9833008D1286 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -105,8 +105,8 @@
 		E5A2B8F41C2A4C7B00D95012 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E5A2B8F31C2A4C7B00D95012 /* SnapperiOS.framework */,
-				E5C5F2361C2B9833008D1286 /* SnapperOSX.framework */,
+				E5A2B8F31C2A4C7B00D95012 /* Snapper.framework */,
+				E5C5F2361C2B9833008D1286 /* Snapper.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -191,7 +191,7 @@
 			);
 			name = "Snapper-iOS";
 			productName = Snapper;
-			productReference = E5A2B8F31C2A4C7B00D95012 /* SnapperiOS.framework */;
+			productReference = E5A2B8F31C2A4C7B00D95012 /* Snapper.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E5C5F2351C2B9833008D1286 /* Snapper-Mac */ = {
@@ -209,7 +209,7 @@
 			);
 			name = "Snapper-Mac";
 			productName = "Snapper-Mac";
-			productReference = E5C5F2361C2B9833008D1286 /* SnapperOSX.framework */;
+			productReference = E5C5F2361C2B9833008D1286 /* Snapper.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -421,7 +421,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.Snapper;
-				PRODUCT_NAME = SnapperiOS;
+				PRODUCT_NAME = Snapper;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -439,7 +439,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.Snapper;
-				PRODUCT_NAME = SnapperiOS;
+				PRODUCT_NAME = Snapper;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -459,7 +459,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.Snapper;
-				PRODUCT_NAME = SnapperOSX;
+				PRODUCT_NAME = Snapper;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -480,7 +480,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.Snapper;
-				PRODUCT_NAME = SnapperOSX;
+				PRODUCT_NAME = Snapper;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
