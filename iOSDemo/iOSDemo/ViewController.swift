@@ -11,15 +11,15 @@ import Snapper
 
 class ViewController: UIViewController {
 
-    let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.Log(false), .ConnectParams(["token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1NWM4MTdmOGU3MTVmYTk5MmExOTNlOTkiLCJleHAiOjE0NTA5MzYwODd9.Y9gk3d3YTE3loyUxWSxiVJzHjhe12bn5O5qGsuJ89JE"])], subscribeURL:"https://www.teambition.com",subscribeToken:"ff")
+    let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.Log(true), .ConnectParams(["token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1NWM4MTdmOGU3MTVmYTk5MmExOTNlOTkiLCJleHAiOjE0NTExMTI3NzV9.q52hh21gpPzpbb1hgICmrWqdU4YQY8xx_8VXFcy1wT0"])], subscribeURL:"https://www.teambition.com",subscribeToken:"ff")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         snapper.connect()
         
         snapper.on("connect") { (data) -> Void in
-            print("connect")
             print(self.snapper.status)
+            self.snapper.join("56333d241aa92ac80a957844")
         }
         
         snapper.on("error") { (data) -> Void in
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
             print(message.items)
             self.snapper.replay(message.id)
         }
-        snapper.join("56333d241aa92ac80a957844")
+        
     }
 
     override func didReceiveMemoryWarning() {

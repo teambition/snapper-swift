@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E5A2B8F21C2A4C7B00D95012"
-               BuildableName = "SnapperiOS.framework"
+               BuildableName = "Snapper.framework"
                BlueprintName = "Snapper-iOS"
                ReferencedContainer = "container:Snapper.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E5A2B8F21C2A4C7B00D95012"
-            BuildableName = "SnapperiOS.framework"
+            BuildableName = "Snapper.framework"
             BlueprintName = "Snapper-iOS"
             ReferencedContainer = "container:Snapper.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E5A2B8F21C2A4C7B00D95012"
-            BuildableName = "SnapperiOS.framework"
+            BuildableName = "Snapper.framework"
             BlueprintName = "Snapper-iOS"
             ReferencedContainer = "container:Snapper.xcodeproj">
          </BuildableReference>

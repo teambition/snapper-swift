@@ -335,11 +335,12 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         let url = NSURL(string: "\(self.subscribeURL)/api/projects/\(projectID)/subscribe")!
         let request = NSMutableURLRequest(URL: url)
         request.HTTPMethod = "POST"
-        let params = "consumerId=\(self.sid!)"
-        request.HTTPBody = params.dataUsingEncoding(NSUTF8StringEncoding)
+        let params = ["consumerId":self.sid!]
+        request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(params, options: .PrettyPrinted)
+        request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(params, options: .PrettyPrinted)
         request.addValue("OAuth2 \(self.subscribeToken)", forHTTPHeaderField: "Authorization")
         let dataTask = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
-            print(response)
         }
         dataTask.resume()
     }
