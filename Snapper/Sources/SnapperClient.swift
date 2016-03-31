@@ -292,9 +292,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
     }
     
     public func parseBinaryData(data: NSData) {
-        dispatch_async(parseQueue) {
-            //SocketParser.parseBinaryData(data, socket: self)
-        }
+        
     }
     
     /**
@@ -330,6 +328,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         }
         joinRequest(projectID)
     }
+    
 
     func joinRequest(projectID: String) {
         let url = NSURL(string: "\(self.subscribeURL)/api/projects/\(projectID)/subscribe")!

@@ -36,8 +36,14 @@ class SnapperParser {
                     
                     let id: NSNumber = json["id"] as! NSNumber
                     
-                    packet.message = SnapperMessage(id:id.integerValue, message: "message", items: json["params"] as? NSArray)
-                    return .Right(packet)
+                    if let params = json["params"] {
+                        let paramsData = params.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+                        let paramsArray =  try NSJSONSerialization.JSONObjectWithData(paramsData, options: .AllowFragments)
+                        packet.message = SnapperMessage(id:id.integerValue, message: "message", items: paramsArray as? NSArray)
+                        return .Right(packet)
+                    } else {
+                        return .Left("Invalid packet type")
+                    }
             } else {
                 return .Left("Invalid packet type")
             }
@@ -46,7 +52,6 @@ class SnapperParser {
             DefaultSocketLogger.Logger.error("Error parsing message packet", type: "")
             return .Left("Invalid packet type")
         }
-        
     }
     
     // Parses data for events
