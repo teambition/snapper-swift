@@ -174,7 +174,8 @@ func ~= (left: SwiftRegex, right: [String]) -> String {
     var matchNumber = 0
     return left.substituteMatches({match, stop -> String in
         
-        if ++matchNumber == right.count {
+        matchNumber += 1
+        if matchNumber == right.count {
             stop.memory = true
         }
         

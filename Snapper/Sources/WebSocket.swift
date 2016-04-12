@@ -389,7 +389,7 @@ public class WebSocket : NSObject, NSStreamDelegate {
         var totalSize = 0
         for i in 0..<bufferLen {
             if buffer[i] == CRLFBytes[k] {
-                k++
+                k += 1
                 if k == 3 {
                     totalSize = i + 1
                     break
@@ -613,7 +613,7 @@ public class WebSocket : NSObject, NSStreamDelegate {
             }
             if let response = response {
                 response.bytesLeft -= Int(len)
-                response.frameCount++
+                response.frameCount += 1
                 response.isFin = isFin > 0 ? true : false
                 if isNew {
                     readStack.append(response)
@@ -806,11 +806,12 @@ private class SSLSecurity {
     convenience init(usePublicKeys: Bool = false) {
         let paths = NSBundle.mainBundle().pathsForResourcesOfType("cer", inDirectory: ".")
         
-        let certs = paths.reduce([SSLCert]()) { (var certs: [SSLCert], path: String) -> [SSLCert] in
+        let certs = paths.reduce([SSLCert]()) { (certs: [SSLCert], path: String) -> [SSLCert] in
+            var newCerts = certs
             if let data = NSData(contentsOfFile: path) {
-                certs.append(SSLCert(data: data))
+                newCerts.append(SSLCert(data: data))
             }
-            return certs
+            return newCerts
         }
         
         self.init(certs: certs, usePublicKeys: usePublicKeys)
@@ -829,25 +830,27 @@ private class SSLSecurity {
         
         if self.usePublicKeys {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,0)) {
-                let pubKeys = certs.reduce([SecKeyRef]()) { (var pubKeys: [SecKeyRef], cert: SSLCert) -> [SecKeyRef] in
+                let pubKeys = certs.reduce([SecKeyRef]()) { (pubKeys: [SecKeyRef], cert: SSLCert) -> [SecKeyRef] in
                     if let data = cert.certData where cert.key == nil {
                         cert.key = self.extractPublicKey(data)
                     }
+                    var newPubKeys = pubKeys
                     if let key = cert.key {
-                        pubKeys.append(key)
+                        newPubKeys.append(key)
                     }
-                    return pubKeys
+                    return newPubKeys
                 }
                 
                 self.pubKeys = pubKeys
                 self.isReady = true
             }
         } else {
-            let certificates = certs.reduce([NSData]()) { (var certificates: [NSData], cert: SSLCert) -> [NSData] in
+            let certificates = certs.reduce([NSData]()) { (certificates: [NSData], cert: SSLCert) -> [NSData] in
+                var newCertificates = certificates
                 if let data = cert.certData {
-                    certificates.append(data)
+                    newCertificates.append(data)
                 }
-                return certificates
+                return newCertificates
             }
             self.certificates = certificates
             self.isReady = true
@@ -905,7 +908,7 @@ private class SSLSecurity {
                 for serverCert in serverCerts {
                     for cert in certs {
                         if cert == serverCert {
-                            trustedCount++
+                            trustedCount += 1
                             break
                         }
                     }
@@ -957,10 +960,11 @@ private class SSLSecurity {
      - returns: the certificate chain for the trust
      */
     func certificateChainForTrust(trust: SecTrustRef) -> [NSData] {
-        let certificates = (0..<SecTrustGetCertificateCount(trust)).reduce([NSData]()) { (var certificates: [NSData], index: Int) -> [NSData] in
+        let certificates = (0..<SecTrustGetCertificateCount(trust)).reduce([NSData]()) { (certificates: [NSData], index: Int) -> [NSData] in
+            var newCertificates = certificates
             let cert = SecTrustGetCertificateAtIndex(trust, index)
-            certificates.append(SecCertificateCopyData(cert!))
-            return certificates
+            newCertificates.append(SecCertificateCopyData(cert!))
+            return newCertificates
         }
         
         return certificates
@@ -975,13 +979,13 @@ private class SSLSecurity {
      */
     func publicKeyChainForTrust(trust: SecTrustRef) -> [SecKeyRef] {
         let policy = SecPolicyCreateBasicX509()
-        let keys = (0..<SecTrustGetCertificateCount(trust)).reduce([SecKeyRef]()) { (var keys: [SecKeyRef], index: Int) -> [SecKeyRef] in
+        let keys = (0..<SecTrustGetCertificateCount(trust)).reduce([SecKeyRef]()) { (keys: [SecKeyRef], index: Int) -> [SecKeyRef] in
             let cert = SecTrustGetCertificateAtIndex(trust, index)
+            var newKeys = keys
             if let key = extractPublicKeyFromCert(cert!, policy: policy) {
-                keys.append(key)
+                newKeys.append(key)
             }
-            
-            return keys
+            return newKeys
         }
         
         return keys

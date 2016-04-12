@@ -367,7 +367,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
             
             dispatch_async(dispatch_get_main_queue()) {
                 self.reconnectTimer = NSTimer.scheduledTimerWithTimeInterval(Double(self.reconnectWait),
-                    target: self, selector: "_tryReconnect", userInfo: nil, repeats: true)
+                    target: self, selector: #selector(SnapperClient._tryReconnect), userInfo: nil, repeats: true)
             }
         }
     }
@@ -390,7 +390,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         handleEvent("reconnectAttempt", data: [reconnectAttempts - currentReconnectAttempt],
             isInternalMessage: true)
         
-        currentReconnectAttempt++
+        currentReconnectAttempt += 1
         connect()
     }
 }

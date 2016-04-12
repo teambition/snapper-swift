@@ -36,11 +36,23 @@ class SnapperParser {
                     
                     let id: NSNumber = json["id"] as! NSNumber
                     
-                    if let params = json["params"] {
-                        let paramsData = params.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-                        let paramsArray =  try NSJSONSerialization.JSONObjectWithData(paramsData, options: .AllowFragments)
-                        packet.message = SnapperMessage(id:id.integerValue, message: "message", items: paramsArray as? NSArray)
-                        return .Right(packet)
+                    if let params = json["params"] as? [String] {
+                        var tempArray = [AnyObject]()
+                        do {
+                            try params.forEach({ (param) in
+                                
+                                let paramsData = param.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+                                let paramsArray =  try NSJSONSerialization.JSONObjectWithData(paramsData, options: .AllowFragments)
+                                tempArray.append(paramsArray)
+                
+                                
+                            })
+                            packet.message = SnapperMessage(id:id.integerValue, message: "message", items: tempArray)
+                            return .Right(packet)
+                        } catch {
+                        
+                        }
+                        return .Left("Invalid packet type")
                     } else {
                         return .Left("Invalid packet type")
                     }

@@ -12,7 +12,7 @@ import Snapper
 class ViewController: UIViewController {
 
 //    let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.Log(true), .ConnectParams(["token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1NWM4MTdmOGU3MTVmYTk5MmExOTNlOTkiLCJleHAiOjE0NTExMjA4OTd9.K3FBtEmd4zmdZEAAmDzw_8okgYB8hKtqbZxnuJ2LWFM"])])
-    let snapper = SnapperClient(socketURL: "push.teambition.com/websocket", options: [.Log(true), .ConnectParams(["token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1NTgyM2MwNWZiMDkzMWRiNWM1MzE0NDciLCJleHAiOjE0NTExMjI3MDh9.uHuLTbETtRF0SropvWP9EVdh2F6oOKP5F8619Fe0318"]), .Secure(true)])
+    let snapper = SnapperClient(socketURL: "push.teambition.com/websocket", options: [.Log(true), .ConnectParams(["token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI1NjgyMmFjOTI3MjgzMmJkMjk4ZjhiNWUiLCJleHAiOjE0NjA2MDc2MTZ9.WiGqQ3U0BCa-bYfANVXMDi_GJrALrHm1dZTnf9VOrp8"]), .Secure(true)])
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +32,7 @@ class ViewController: UIViewController {
         
         snapper.message { (message: SnapperMessage) -> Void in
             print(message.items?.count)
+            
             self.snapper.replay(message.id)
         }
         

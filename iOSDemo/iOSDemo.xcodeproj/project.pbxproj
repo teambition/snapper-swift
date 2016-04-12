@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E5616B1A1CBCB103004D3AA3 /* Snapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E5616B191CBCB103004D3AA3 /* Snapper.framework */; };
+		E5616B1B1CBCB103004D3AA3 /* Snapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E5616B191CBCB103004D3AA3 /* Snapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E5A2B9201C2A4D2800D95012 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A2B91F1C2A4D2800D95012 /* AppDelegate.swift */; };
 		E5A2B9221C2A4D2800D95012 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A2B9211C2A4D2800D95012 /* ViewController.swift */; };
 		E5A2B9251C2A4D2800D95012 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5A2B9231C2A4D2800D95012 /* Main.storyboard */; };
@@ -14,7 +16,22 @@
 		E5A2B92A1C2A4D2800D95012 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5A2B9281C2A4D2800D95012 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		E5616B1C1CBCB103004D3AA3 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E5616B1B1CBCB103004D3AA3 /* Snapper.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		E5616B191CBCB103004D3AA3 /* Snapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Snapper.framework; path = "/Users/mrche/Library/Developer/Xcode/DerivedData/snapper-swift-byoalzbrjbjwdbbgcmyxcxmilmbw/Build/Products/Debug-iphonesimulator/Snapper.framework"; sourceTree = "<absolute>"; };
 		E5A2B91C1C2A4D2800D95012 /* iOSDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5A2B91F1C2A4D2800D95012 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E5A2B9211C2A4D2800D95012 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -29,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E5616B1A1CBCB103004D3AA3 /* Snapper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +56,7 @@
 		E5A2B9131C2A4D2800D95012 = {
 			isa = PBXGroup;
 			children = (
+				E5616B191CBCB103004D3AA3 /* Snapper.framework */,
 				E5A2B91E1C2A4D2800D95012 /* iOSDemo */,
 				E5A2B91D1C2A4D2800D95012 /* Products */,
 			);
@@ -74,6 +93,7 @@
 				E5A2B9181C2A4D2800D95012 /* Sources */,
 				E5A2B9191C2A4D2800D95012 /* Frameworks */,
 				E5A2B91A1C2A4D2800D95012 /* Resources */,
+				E5616B1C1CBCB103004D3AA3 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -284,6 +304,7 @@
 				E5A2B9301C2A4D2800D95012 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
