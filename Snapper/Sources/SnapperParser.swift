@@ -25,37 +25,40 @@ class SnapperParser {
             DefaultSocketLogger.Logger.log("Got invalid packet: %@", type: "SocketParser", args: pack.description)
         }
     }
-    
+
     /// Parses a messsage from the engine. Returning either a string error or a complete SocketPacket
     static func parseString(message: String) -> Either<String, SnapperPacket> {
-        let messageData = message.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
+        guard let messageData = message.dataUsingEncoding(NSUTF8StringEncoding) else {
+            return .Left("Invalid packet type")
+        }
         do {
+            var tempArray = [AnyObject]()
             if let json = try NSJSONSerialization.JSONObjectWithData(messageData,
                 options: NSJSONReadingOptions.AllowFragments) as? NSDictionary {
-                    var packet = SnapperPacket(type: .Message, nsp: "Message")
-                    
-                    let id: NSNumber = json["id"] as! NSNumber
-                    
-                    if let params = json["params"] as? [String] {
-                        var tempArray = [AnyObject]()
-                        do {
-                            try params.forEach({ (param) in
-                                
-                                let paramsData = param.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!
-                                let paramsArray =  try NSJSONSerialization.JSONObjectWithData(paramsData, options: .AllowFragments)
-                                tempArray.append(paramsArray)
+                var packet = SnapperPacket(type: .Message, nsp: "Message")
                 
-                                
-                            })
-                            packet.message = SnapperMessage(id:id.integerValue, message: "message", items: tempArray)
-                            return .Right(packet)
-                        } catch {
-                        
-                        }
-                        return .Left("Invalid packet type")
-                    } else {
+                guard let id = json["id"] as? NSNumber else {
+                    return .Left("Invalid packet type")
+                }
+                
+                if let params = json["params"] as? [String] {
+                    do {
+                        try params.forEach({ (param) in
+                            let paramsData = param.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+                            if let data = paramsData {
+                                let paramsArray =  try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                                tempArray.append(paramsArray)
+                            }
+                        })
+                        packet.message = SnapperMessage(id:id.integerValue, message: "message", items: tempArray)
+                        return .Right(packet)
+                    } catch {
                         return .Left("Invalid packet type")
                     }
+                    return .Left("Invalid packet type")
+                } else {
+                    return .Left("Invalid packet type")
+                }
             } else {
                 return .Left("Invalid packet type")
             }
@@ -65,7 +68,7 @@ class SnapperParser {
             return .Left("Invalid packet type")
         }
     }
-    
+
     // Parses data for events
     private static func parseData(data: String) -> Either<String, [AnyObject]> {
         let stringData = data.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
@@ -80,7 +83,7 @@ class SnapperParser {
             return .Left("Error parsing data for packet")
         }
     }
-    
+
     // Parses messages recieved
     static func parseSocketMessage(message: String, socket: SnapperClient) {
         guard !message.isEmpty else { return }
