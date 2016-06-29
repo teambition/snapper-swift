@@ -37,7 +37,7 @@ class SnapperParser {
                 options: NSJSONReadingOptions.AllowFragments) as? NSDictionary {
                 var packet = SnapperPacket(type: .Message, nsp: "Message")
                 
-                guard let id = json["id"] as? NSNumber else {
+                guard let id = json["id"] else {
                     return .Left("Invalid packet type")
                 }
                 
@@ -50,7 +50,7 @@ class SnapperParser {
                                 tempArray.append(paramsArray)
                             }
                         })
-                        packet.message = SnapperMessage(id:id.integerValue, message: "message", items: tempArray)
+                        packet.message = SnapperMessage(id:id, message: "message", items: tempArray)
                         return .Right(packet)
                     } catch {
                         return .Left("Invalid packet type")

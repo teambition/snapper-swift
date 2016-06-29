@@ -8,14 +8,14 @@
 import Foundation
 
 public class SnapperMessage: NSObject {
-    public let id: Int!
+    public let id: AnyObject!
     public let message: String!
     public let items: NSArray?
     override public var description: String {
         return "SocketAnyEvent: Event: \(message) items: \(items ?? nil)"
     }
     
-    init(id: Int, message: String, items: NSArray?) {
+    init(id: AnyObject, message: String, items: NSArray?) {
         self.id = id
         self.message = message
         self.items = items
