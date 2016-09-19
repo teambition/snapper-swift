@@ -12,103 +12,103 @@ import CoreFoundation
 
 public final class SnapperClient: NSObject, SocketEngineClient {
     public let socketURL: String
-    
-    public private(set) var engine: SocketEngineSpec?
-    public private(set) var status = SnapperClietnStatus.NotConnected
-    
+
+    public fileprivate(set) var engine: SocketEngineSpec?
+    public fileprivate(set) var status = SnapperClietnStatus.notConnected
+
     public var forceNew = false
     public var nsp = "/"
     public var options: Set<SnapperClientOption>
     public var reconnects = true
     public var reconnectWait = 10
-    var session: NSURLSession
+    var session: URLSession
     var subscribeURL: String
     var subscribeToken: String
-    
+
     public var sid: String? {
         return engine?.sid
     }
-    
-    private let emitQueue = dispatch_queue_create("com.socketio.emitQueue", DISPATCH_QUEUE_SERIAL)
-    private let logType = "SocketIOClient"
-    private let parseQueue = dispatch_queue_create("com.socketio.parseQueue", DISPATCH_QUEUE_SERIAL)
-    
-    private var anyHandler: ((SnapperEvent) -> Void)?
-    private var messageHandler: messageCallback?
-    private var currentReconnectAttempt = 0
-    private var handlers = [SnapperEventHandler]()
-    private var connectParams: [String: AnyObject]?
-    private var reconnectTimer: NSTimer?
-    
-    private(set) var currentAck = -1
-    private(set) var handleQueue = dispatch_get_main_queue()
-    private(set) var reconnectAttempts = -1
-    
+
+    fileprivate let emitQueue = DispatchQueue(label: "com.socketio.emitQueue", attributes: [])
+    fileprivate let logType = "SocketIOClient"
+    fileprivate let parseQueue = DispatchQueue(label: "com.socketio.parseQueue", attributes: [])
+
+    fileprivate var anyHandler: ((SnapperEvent) -> Void)?
+    fileprivate var messageHandler: messageCallback?
+    fileprivate var currentReconnectAttempt = 0
+    fileprivate var handlers = [SnapperEventHandler]()
+    fileprivate var connectParams: [String: Any]?
+    fileprivate var reconnectTimer: Timer?
+
+    fileprivate(set) var currentAck = -1
+    fileprivate(set) var handleQueue = DispatchQueue.main
+    fileprivate(set) var reconnectAttempts = -1
+
     var waitingData = [SnapperPacket]()
-    
+
     /**
      Type safe way to create a new Snapper. opts can be omitted
      */
     public init(socketURL: String, options: Set<SnapperClientOption> = [], subscribeURL: String = "", subscribeToken: String = "") {
         self.options = options
-        self.session = NSURLSession.sharedSession()
+        self.session = URLSession.shared
         self.subscribeURL = subscribeURL
         self.subscribeToken = subscribeToken
         if socketURL["https://"].matches().count != 0 {
-            self.options.insertIgnore(.Secure(true))
+            self.options.insertIgnore(.secure(true))
         }
-        
+
         self.socketURL = socketURL["https?://"] ~= ""
-        
-        for option in options ?? [] {
+
+        for option in options {
             switch option {
-            case .ConnectParams(let params):
+            case .connectParams(let params):
                 connectParams = params
-            case .Reconnects(let reconnects):
+            case .reconnects(let reconnects):
                 self.reconnects = reconnects
-            case .ReconnectAttempts(let attempts):
+            case .reconnectAttempts(let attempts):
                 reconnectAttempts = attempts
-            case .ReconnectWait(let wait):
+            case .reconnectWait(let wait):
                 reconnectWait = abs(wait)
-            case .Nsp(let nsp):
+            case .nsp(let nsp):
                 self.nsp = nsp
-            case .Log(let log):
-                DefaultSocketLogger.Logger.log = log
-            case .Logger(let logger):
+            case .log(let log):
+                DefaultSocketLogger.Logger.isLog = log
+            case .logger(let logger):
                 DefaultSocketLogger.Logger = logger
-            case .HandleQueue(let queue):
+            case .handleQueue(let queue):
                 handleQueue = queue
-            case .ForceNew(let force):
+            case .forceNew(let force):
                 forceNew = force
             default:
                 continue
             }
         }
-        
-        self.options.insertIgnore(.Path("/socket.io"))
-        
+
+        self.options.insertIgnore(.path("/socket.io"))
+
         super.init()
     }
-    
+
     deinit {
         DefaultSocketLogger.Logger.log("Client is being deinit", type: logType)
         engine?.close()
     }
-    
-    private func addEngine() -> SocketEngine {
+
+    fileprivate func addEngine() -> SocketEngine {
         DefaultSocketLogger.Logger.log("Adding engine", type: logType)
-        
-        let newEngine = SocketEngine(client: self, url: socketURL, options: options ?? [])
-        
+
+        let newEngine = SocketEngine(client: self, url: socketURL, options: options )
+
         engine = newEngine
         return newEngine
     }
-    
-    private func clearReconnectTimer() {
+
+    fileprivate func clearReconnectTimer() {
         reconnectTimer?.invalidate()
         reconnectTimer = nil
     }
-    
+
     /**
      Closes the socket. Only reopen the same socket if you know what you're doing.
      Will turn off automatic reconnects.
@@ -116,208 +116,209 @@ public final class SnapperClient: NSObject, SocketEngineClient {
      */
     public func close() {
         DefaultSocketLogger.Logger.log("Closing socket", type: logType)
-        
+
         reconnects = false
         didDisconnect("Closed")
     }
-    
+
     /**
      Connect to the server.
      */
     public func connect() {
         connect(timeoutAfter: 0, withTimeoutHandler: nil)
     }
-    
+
     /**
      Connect to the server. If we aren't connected after timeoutAfter, call handler
      */
-    public func connect(timeoutAfter timeoutAfter: Int,
+    public func connect(timeoutAfter: Int,
         withTimeoutHandler handler: (() -> Void)?) {
             assert(timeoutAfter >= 0, "Invalid timeout: \(timeoutAfter)")
-            
-            guard status != .Connected else {
+
+            guard status != .connected else {
                 DefaultSocketLogger.Logger.log("Tried connecting on an already connected socket",
                     type: logType)
                 return
             }
-            
-            status = .Connecting
-            
+
+            status = .connecting
+
             if engine == nil || forceNew {
                 addEngine().open(connectParams)
             } else {
                 engine?.open(connectParams)
             }
-            
+
             guard timeoutAfter != 0 else { return }
-            
-            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(timeoutAfter) * Int64(NSEC_PER_SEC))
-            
-            dispatch_after(time, handleQueue) {[weak self] in
-                if let this = self where this.status != .Connected {
-                    this.status = .Closed
+
+            let time = DispatchTime.now() + Double(Int64(timeoutAfter) * Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)
+
+            handleQueue.asyncAfter(deadline: time) {[weak self] in
+                if let this = self, this.status != .connected {
+                    this.status = .closed
                     this.engine?.close()
-                    
+
                     handler?()
                 }
             }
     }
-    
+
     public func didConnect() {
         DefaultSocketLogger.Logger.log("Socket connected", type: logType)
-        status = .Connected
+        status = .connected
         currentReconnectAttempt = 0
         clearReconnectTimer()
-        
+
         // Don't handle as internal because something crazy could happen where
         // we disconnect before it's handled
         handleEvent("connect", data: [], isInternalMessage: false)
     }
-    
-    func didDisconnect(reason: String) {
-        guard status != .Closed else {
+
+    func didDisconnect(_ reason: String) {
+        guard status != .closed else {
             return
         }
-        
+
         DefaultSocketLogger.Logger.log("Disconnected: %@", type: logType, args: reason)
-        
-        status = .Closed
+
+        status = .closed
         reconnects = false
-        
+
         // Make sure the engine is actually dead.
         engine?.close()
         handleEvent("disconnect", data: [reason], isInternalMessage: true)
     }
-    
+
     /// error
-    public func didError(reason: AnyObject) {
+    public func didError(_ reason: Any) {
         DefaultSocketLogger.Logger.error("%@", type: logType, args: reason)
-        
-        handleEvent("error", data: reason as? [AnyObject] ?? [reason],
+
+        handleEvent("error", data: reason as? [Any] ?? [reason],
             isInternalMessage: true)
     }
-    
+
     /**
      Same as close
      */
     public func disconnect() {
         close()
     }
-    
-    public func didReceiveMessage(message: SnapperMessage) {
+
+    public func didReceiveMessage(_ message: SnapperMessage) {
         if let handle = messageHandler {
             handle(message)
         }
     }
-    
-    public func engineDidClose(reason: String) {
+
+    public func engineDidClose(_ reason: String) {
         waitingData.removeAll()
-        
-        if status == .Closed || !reconnects {
+
+        if status == .closed || !reconnects {
             didDisconnect(reason)
-        } else if status != .Reconnecting {
-            status = .Reconnecting
+        } else if status != .reconnecting {
+            status = .reconnecting
             handleEvent("reconnect", data: [reason], isInternalMessage: true)
             tryReconnect()
         }
     }
-    
+
     /**
      Causes an event to be handled. Only use if you know what you're doing.
      */
-    public func handleEvent(event: String, data: [AnyObject], isInternalMessage: Bool,
+    public func handleEvent(_ event: String, data: [Any], isInternalMessage: Bool,
         withAck ack: Int = -1) {
-            guard status == .Connected || isInternalMessage else {
+            guard status == .connected || isInternalMessage else {
                 return
             }
-            
-            DefaultSocketLogger.Logger.log("Handling event: %@ with data: %@", type: logType, args: event, data ?? "")
-            
-            dispatch_async(handleQueue) {
-                self.anyHandler?(SnapperEvent(event: event, items: data))
-                
+
+            DefaultSocketLogger.Logger.log("Handling event: %@ with data: %@", type: logType, args: event, data )
+
+            handleQueue.async {
+                self.anyHandler?(SnapperEvent(event: event, items: data as NSArray?))
+
                 for handler in self.handlers where handler.event == event {
                     handler.executeCallback(data)
                 }
             }
-            
+
     }
-    
+
     /**
      Removes handler(s)
      */
-    public func off(event: String) {
+    public func off(_ event: String) {
         DefaultSocketLogger.Logger.log("Removing handler for event: %@", type: logType, args: event)
-        
+
         handlers = handlers.filter { $0.event != event }
     }
-    
+
     /**
      Removes a handler with the specified UUID gotten from an `on` or `once`
      */
-    public func off(id id: NSUUID) {
+    public func off(id: UUID) {
         DefaultSocketLogger.Logger.log("Removing handler with id: %@", type: logType, args: id)
-        
-        handlers = handlers.filter { $0.id != id }
+
+        handlers = handlers.filter { $0.id as UUID != id }
     }
-    
+
     /**
      Adds a handler for an event.
      Returns: A unique id for the handler
      */
-    public func on(event: String, callback: NormalCallback) -> NSUUID {
+    @discardableResult
+    public func on(_ event: String, callback: @escaping NormalCallback) -> UUID {
         DefaultSocketLogger.Logger.log("Adding handler for event: %@", type: logType, args: event)
-        
-        let handler = SnapperEventHandler(event: event, id: NSUUID(), callback: callback)
+
+        let handler = SnapperEventHandler(event: event, id: UUID(), callback: callback)
         handlers.append(handler)
-        
+
         return handler.id
     }
-    
-    public func message(callback: messageCallback?) {
+
+    public func message(_ callback: messageCallback?) {
         messageHandler = callback
     }
-    
+
     /**
      Adds a handler that will be called on every event.
      */
-    public func onAny(handler: (SnapperEvent) -> Void) {
+    public func onAny(_ handler: @escaping (SnapperEvent) -> Void) {
         anyHandler = handler
     }
-    
-    public func parseSocketMessage(msg: String) {
-        dispatch_async(parseQueue) {
+
+    public func parseSocketMessage(_ msg: String) {
+        parseQueue.async {
             SnapperParser.parseSocketMessage(msg, socket: self)
         }
     }
-    
-    public func parseBinaryData(data: NSData) {
-        
+
+    public func parseBinaryData(_ data: Data) {
+
     }
-    
+
     /**
      replay
-     
+
      - parameter id: message id
      */
-    public func replay(id: AnyObject) {
-        
-        guard status == .Connected else {
+    public func replay(_ id: Any) {
+
+        guard status == .connected else {
             handleEvent("error", data: ["Tried emitting when not connected"], isInternalMessage: true)
             return
         }
-        
-        let dict = ["id":id,"result":"OK","jsonrpc":"2.0"]
-        let data = try! NSJSONSerialization.dataWithJSONObject(dict, options: [])
-        let json = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
-        engine?.write(json, withType: .Message, withData: [])
+
+        let dict = ["id":id, "result":"OK", "jsonrpc":"2.0"] as [String : Any]
+        let data = try! JSONSerialization.data(withJSONObject: dict, options: [])
+        let json = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
+        engine?.write(json, withType: .message, withData: [])
     }
 
-    
+
     /**
      join the project to receive the project notification
      */
-    public func join(projectID: String) {
+    public func join(_ projectID: String) {
         guard self.subscribeToken != ""else {
             DefaultSocketLogger.Logger.log("subscribeToken must not be empty", type: logType)
             return
@@ -328,19 +329,19 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         }
         joinRequest(projectID)
     }
-    
 
-    func joinRequest(projectID: String) {
-        let url = NSURL(string: "\(self.subscribeURL)/api/projects/\(projectID)/subscribe")!
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = "POST"
+
+    func joinRequest(_ projectID: String) {
+        let url = URL(string: "\(self.subscribeURL)/api/projects/\(projectID)/subscribe")!
+        let request = NSMutableURLRequest(url: url)
+        request.httpMethod = "POST"
         let params = ["consumerId":self.sid!]
-        request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(params, options: .PrettyPrinted)
+        request.httpBody = try! JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(params, options: .PrettyPrinted)
+        request.httpBody = try! JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
         request.addValue("OAuth2 \(self.subscribeToken)", forHTTPHeaderField: "Authorization")
-        let dataTask = session.dataTaskWithRequest(request) { (data, response, error) -> Void in
-        }
+        let dataTask = session.dataTask(with: (request as URLRequest), completionHandler: { (data, response, error) -> Void in
+        })
         dataTask.resume()
     }
 
@@ -350,46 +351,46 @@ public final class SnapperClient: NSObject, SocketEngineClient {
     public func reconnect() {
         tryReconnect()
     }
-    
+
     /**
      Removes all handlers.
      Can be used after disconnecting to break any potential remaining retain cycles.
      */
     public func removeAllHandlers() {
-        handlers.removeAll(keepCapacity: false)
+        handlers.removeAll(keepingCapacity: false)
     }
-    
-    private func tryReconnect() {
+
+    fileprivate func tryReconnect() {
         if reconnectTimer == nil {
             DefaultSocketLogger.Logger.log("Starting reconnect", type: logType)
-            
-            status = .Reconnecting
-            
-            dispatch_async(dispatch_get_main_queue()) {
-                self.reconnectTimer = NSTimer.scheduledTimerWithTimeInterval(Double(self.reconnectWait),
+
+            status = .reconnecting
+
+            DispatchQueue.main.async {
+                self.reconnectTimer = Timer.scheduledTimer(timeInterval: Double(self.reconnectWait),
                     target: self, selector: #selector(SnapperClient._tryReconnect), userInfo: nil, repeats: true)
             }
         }
     }
-    
-    @objc private func _tryReconnect() {
-        if status == .Connected {
+
+    @objc fileprivate func _tryReconnect() {
+        if status == .connected {
             clearReconnectTimer()
-            
+
             return
         }
-        
+
         if reconnectAttempts != -1 && currentReconnectAttempt + 1 > reconnectAttempts || !reconnects {
             clearReconnectTimer()
             didDisconnect("Reconnect Failed")
-            
+
             return
         }
-        
+
         DefaultSocketLogger.Logger.log("Trying to reconnect", type: logType)
         handleEvent("reconnectAttempt", data: [reconnectAttempts - currentReconnectAttempt],
             isInternalMessage: true)
-        
+
         currentReconnectAttempt += 1
         connect()
     }
@@ -400,12 +401,12 @@ extension SnapperClient {
     var testHandlers: [SnapperEventHandler] {
         return handlers
     }
-    
+
     func setTestable() {
-        status = .Connected
+        status = .connected
     }
-    
-    func setTestEngine(engine: SocketEngineSpec?) {
+
+    func setTestEngine(_ engine: SocketEngineSpec?) {
         self.engine = engine
     }
 }

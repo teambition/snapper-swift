@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		86ABA7EA1D910BD8006BDEA7 /* SSLSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86ABA7E91D910BD8006BDEA7 /* SSLSecurity.swift */; };
 		E50A0B8F1C2A51B4000C38AC /* SwiftRegex.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50A0B8E1C2A51B4000C38AC /* SwiftRegex.swift */; };
 		E539A58D1C2A67B600431A9E /* SnapperMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E539A58C1C2A67B600431A9E /* SnapperMessage.swift */; };
 		E539A58F1C2A696200431A9E /* SnapperParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E539A58E1C2A696200431A9E /* SnapperParser.swift */; };
@@ -48,6 +49,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		86ABA7E91D910BD8006BDEA7 /* SSLSecurity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SSLSecurity.swift; sourceTree = "<group>"; };
 		E50A0B8E1C2A51B4000C38AC /* SwiftRegex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftRegex.swift; sourceTree = "<group>"; };
 		E539A58C1C2A67B600431A9E /* SnapperMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapperMessage.swift; sourceTree = "<group>"; };
 		E539A58E1C2A696200431A9E /* SnapperParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapperParser.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				E5A2B9071C2A4CB600D95012 /* SocketEngineClient.swift */,
 				E5A2B8FF1C2A4CB600D95012 /* SocketStringReader.swift */,
 				E50A0B8E1C2A51B4000C38AC /* SwiftRegex.swift */,
+				86ABA7E91D910BD8006BDEA7 /* SSLSecurity.swift */,
 				E5A2B9081C2A4CB600D95012 /* WebSocket.swift */,
 			);
 			path = Sources;
@@ -184,6 +187,7 @@
 				E5A2B8EF1C2A4C7B00D95012 /* Frameworks */,
 				E5A2B8F01C2A4C7B00D95012 /* Headers */,
 				E5A2B8F11C2A4C7B00D95012 /* Resources */,
+				86A830D21D8F8FDD00A69D85 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -218,11 +222,12 @@
 		E5A2B8EA1C2A4C7B00D95012 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = HarriesChen;
 				TargetAttributes = {
 					E5A2B8F21C2A4C7B00D95012 = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0800;
 					};
 					E5C5F2351C2B9833008D1286 = {
 						CreatedOnToolsVersion = 7.2;
@@ -264,6 +269,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		86A830D21D8F8FDD00A69D85 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		E5A2B8EE1C2A4C7B00D95012 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -276,6 +297,7 @@
 				E5A2B9321C2A4D7200D95012 /* SnapperClietnStatus.swift in Sources */,
 				E5A2B9101C2A4CB600D95012 /* SocketEngineSpec.swift in Sources */,
 				E5A2B9111C2A4CB600D95012 /* SocketEngineClient.swift in Sources */,
+				86ABA7EA1D910BD8006BDEA7 /* SSLSecurity.swift in Sources */,
 				E5A2B9341C2A4DA300D95012 /* SnapperClient.swift in Sources */,
 				E5A2B90F1C2A4CB600D95012 /* SocketEnginePacketType.swift in Sources */,
 				E5C5998A1C2A4F8300CEEC45 /* SnapperEvent.swift in Sources */,
@@ -331,8 +353,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -380,8 +404,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -402,6 +428,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -413,6 +440,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -424,6 +452,7 @@
 				PRODUCT_NAME = Snapper;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -431,6 +460,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -441,13 +471,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.Snapper;
 				PRODUCT_NAME = Snapper;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
 		E5C5F23C1C2B9833008D1286 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -468,7 +499,7 @@
 		E5C5F23D1C2B9833008D1286 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -514,6 +545,7 @@
 				E5C5F23D1C2B9833008D1286 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

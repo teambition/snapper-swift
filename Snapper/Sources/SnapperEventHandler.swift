@@ -10,10 +10,10 @@ import Foundation
 
 struct SnapperEventHandler {
     let event: String
-    let id: NSUUID
+    let id: UUID
     let callback: NormalCallback
-    
-    func executeCallback(items: [AnyObject]) {
+
+    func executeCallback(_ items: [Any]) {
         callback(items)
     }
 }

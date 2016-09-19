@@ -8,12 +8,12 @@
 
 import Foundation
 
-public typealias AckCallback = ([AnyObject]) -> Void
-public typealias NormalCallback = (AnyObject) -> Void
-public typealias messageCallback = (SnapperMessage -> Void)
-public typealias OnAckCallback = (timeoutAfter: UInt64, callback: AckCallback) -> Void
+public typealias AckCallback = ([Any]) -> Void
+public typealias NormalCallback = (Any) -> Void
+public typealias messageCallback = ((SnapperMessage) -> Void)
+public typealias OnAckCallback = (_ timeoutAfter: UInt64, _ callback: AckCallback) -> Void
 
 enum Either<E, V> {
-    case Left(E)
-    case Right(V)
+    case left(E)
+    case right(V)
 }
