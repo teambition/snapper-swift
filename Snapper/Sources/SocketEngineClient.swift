@@ -10,8 +10,8 @@ import Foundation
 
 @objc public protocol SocketEngineClient {
     func didConnect()
-    func didError(reason: AnyObject)
-    func engineDidClose(reason: String)
-    func parseSocketMessage(msg: String)
-    func parseBinaryData(data: NSData)
+    func didError(_ reason: Any)
+    func engineDidClose(_ reason: String)
+    func parseSocketMessage(_ msg: String)
+    func parseBinaryData(_ data: Data)
 }

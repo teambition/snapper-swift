@@ -7,46 +7,48 @@
 //
 
 struct SocketStringReader {
+
     let message: String
     var currentIndex: String.Index
     var hasNext: Bool {
         return currentIndex != message.endIndex
     }
-    
+
     var currentCharacter: String {
         return String(message[currentIndex])
     }
-    
+
     init(message: String) {
         self.message = message
         currentIndex = message.startIndex
     }
-    
-    mutating func advanceIndexBy(n: Int) {
-        currentIndex = currentIndex.advancedBy(n)
+
+    mutating func advanceIndexBy(_ length: Int) {
+        currentIndex = message.index(currentIndex, offsetBy: length)
     }
-    
+
     mutating func read(readLength: Int) -> String {
-        let readString = message[currentIndex..<currentIndex.advancedBy(readLength)]
+        let readString = message[currentIndex..<message.index(currentIndex, offsetBy: readLength)]
         advanceIndexBy(readLength)
-        
+
         return readString
     }
-    
+
     mutating func readUntilStringOccurence(string: String) -> String {
         let substring = message[currentIndex..<message.endIndex]
-        guard let foundRange = substring.rangeOfString(string) else {
+        guard let foundRange = substring.range(of: string) else {
             currentIndex = message.endIndex
-            
+
             return substring
         }
-        
-        advanceIndexBy(message.startIndex.distanceTo(foundRange.startIndex) + 1)
-        
-        return substring.substringToIndex(foundRange.startIndex)
+
+        let distance = message.distance(from: message.startIndex, to: foundRange.lowerBound) + 1
+        advanceIndexBy(distance)
+
+        return substring.substring(to: foundRange.lowerBound)
     }
-    
+
     mutating func readUntilEnd() -> String {
-        return read(currentIndex.distanceTo(message.endIndex))
+        return read(readLength: message.distance(from: currentIndex, to: message.endIndex))
     }
 }

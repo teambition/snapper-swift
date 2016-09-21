@@ -9,17 +9,17 @@
 import Foundation
 
 class SnapperParser {
-    
-    private static func handlePacket(pack: SnapperPacket, withSocket socket: SnapperClient) {
+
+    fileprivate static func handlePacket(_ pack: SnapperPacket, withSocket socket: SnapperClient) {
         switch pack.type {
-        case .Event:
+        case .event:
             socket.handleEvent(pack.event, data: pack.args ?? [],
                 isInternalMessage: false, withAck: pack.id)
-        case .Disconnect:
+        case .disconnect:
             socket.didDisconnect("Got Disconnect")
-        case .Error:
+        case .error:
             socket.didError(pack.data)
-        case .Message:
+        case .message:
             socket.didReceiveMessage(pack.message!)
         default:
             DefaultSocketLogger.Logger.log("Got invalid packet: %@", type: "SocketParser", args: pack.description)
@@ -27,72 +27,71 @@ class SnapperParser {
     }
 
     /// Parses a messsage from the engine. Returning either a string error or a complete SocketPacket
-    static func parseString(message: String) -> Either<String, SnapperPacket> {
-        guard let messageData = message.dataUsingEncoding(NSUTF8StringEncoding) else {
-            return .Left("Invalid packet type")
+    static func parseString(_ message: String) -> Either<String, SnapperPacket> {
+        guard let messageData = message.data(using: String.Encoding.utf8) else {
+            return .left("Invalid packet type")
         }
         do {
-            var tempArray = [AnyObject]()
-            if let json = try NSJSONSerialization.JSONObjectWithData(messageData,
-                options: NSJSONReadingOptions.AllowFragments) as? NSDictionary {
-                var packet = SnapperPacket(type: .Message, nsp: "Message")
-                
+            var tempArray = [Any]()
+            if let json = try JSONSerialization.jsonObject(with: messageData,
+                options: JSONSerialization.ReadingOptions.allowFragments) as? NSDictionary {
+                var packet = SnapperPacket(type: .message, nsp: "Message")
+
                 guard let id = json["id"] else {
-                    return .Left("Invalid packet type")
+                    return .left("Invalid packet type")
                 }
-                
+
                 if let params = json["params"] as? [String] {
                     do {
                         try params.forEach({ (param) in
-                            let paramsData = param.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+                            let paramsData = param.data(using: String.Encoding.utf8, allowLossyConversion: false)
                             if let data = paramsData {
-                                let paramsArray =  try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                                let paramsArray =  try JSONSerialization.jsonObject(with: data, options: .allowFragments)
                                 tempArray.append(paramsArray)
                             }
                         })
-                        packet.message = SnapperMessage(id:id, message: "message", items: tempArray)
-                        return .Right(packet)
+                        packet.message = SnapperMessage(id:id, message: "message", items: tempArray as NSArray?)
+                        return .right(packet)
                     } catch {
-                        return .Left("Invalid packet type")
+                        return .left("Invalid packet type")
                     }
-                    return .Left("Invalid packet type")
                 } else {
-                    return .Left("Invalid packet type")
+                    return .left("Invalid packet type")
                 }
             } else {
-                return .Left("Invalid packet type")
+                return .left("Invalid packet type")
             }
-            
+
         } catch {
             DefaultSocketLogger.Logger.error("Error parsing message packet", type: "")
-            return .Left("Invalid packet type")
+            return .left("Invalid packet type")
         }
     }
 
     // Parses data for events
-    private static func parseData(data: String) -> Either<String, [AnyObject]> {
-        let stringData = data.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+    fileprivate static func parseData(_ data: String) -> Either<String, [Any]> {
+        let stringData = data.data(using: String.Encoding.utf8, allowLossyConversion: false)
         do {
-            if let arr = try NSJSONSerialization.JSONObjectWithData(stringData!,
-                options: NSJSONReadingOptions.MutableContainers) as? [AnyObject] {
-                    return .Right(arr)
+            if let arr = try JSONSerialization.jsonObject(with: stringData!,
+                options: JSONSerialization.ReadingOptions.mutableContainers) as? [AnyObject] {
+                    return .right(arr)
             } else {
-                return .Left("Expected data array")
+                return .left("Expected data array")
             }
         } catch {
-            return .Left("Error parsing data for packet")
+            return .left("Error parsing data for packet")
         }
     }
 
     // Parses messages recieved
-    static func parseSocketMessage(message: String, socket: SnapperClient) {
+    static func parseSocketMessage(_ message: String, socket: SnapperClient) {
         guard !message.isEmpty else { return }
-        
+
         DefaultSocketLogger.Logger.log("Parsing %@", type: "SocketParser", args: message)
         switch parseString(message) {
-        case .Left(let err):
-            DefaultSocketLogger.Logger.error("\(err): %@", type: "SocketParser", args: message)
-        case .Right(let pack):
+        case .left(let err):
+            DefaultSocketLogger.Logger.error("\(err): %@", type: "SocketParser", args: message as AnyObject)
+        case .right(let pack):
             DefaultSocketLogger.Logger.log("Decoded packet as: %@", type: "SocketParser", args: pack.description)
             handlePacket(pack, withSocket: socket)
         }

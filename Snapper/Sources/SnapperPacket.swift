@@ -9,52 +9,52 @@
 import Foundation
 
 struct SnapperPacket {
-    private let placeholders: Int
-    private var currentPlace = 0
-    
-    private static let logType = "SnapperPacket"
-    
+    fileprivate let placeholders: Int
+    fileprivate var currentPlace = 0
+
+    fileprivate static let logType = "SnapperPacket"
+
     let nsp: String
     let id: Int
     let type: PacketType
-    
+
     enum PacketType: Int {
-        case Connect, Disconnect, Event, Ack, Error, BinaryEvent, BinaryAck, Message
+        case connect, disconnect, event, ack, error, binaryEvent, binaryAck, message
     }
-    
-    var args: [AnyObject]? {
+
+    var args: [Any]? {
         var arr = data
-        
+
         if data.count == 0 {
             return nil
         } else {
-            if type == .Event || type == .BinaryEvent {
-                arr.removeAtIndex(0)
+            if type == .event || type == .binaryEvent {
+                arr.remove(at: 0)
                 return arr
             } else {
                 return arr
             }
         }
     }
-    
-    var binary: [NSData]
-    var data: [AnyObject]
+
+    var binary: [Data]
+    var data: [Any]
     var message: SnapperMessage?
     var description: String {
         return "SocketPacket {type: \(String(type.rawValue)); data: " +
-        "\(String(data)); id: \(id); placeholders: \(placeholders); nsp: \(nsp)}"
+        "\(String(describing: data)); id: \(id); placeholders: \(placeholders); nsp: \(nsp)}"
     }
-    
+
     var event: String {
-        return data[0] as? String ?? String(data[0])
+        return data[0] as? String ?? String(describing: data[0])
     }
-    
+
     var packetString: String {
         return createPacketString()
     }
-    
-    init(type: SnapperPacket.PacketType, data: [AnyObject] = [AnyObject](), id: Int = -1,
-        nsp: String, placeholders: Int = 0, binary: [NSData] = [NSData]()) {
+
+    init(type: SnapperPacket.PacketType, data: [Any] = [Any](), id: Int = -1,
+        nsp: String, placeholders: Int = 0, binary: [Data] = [Data]()) {
             self.data = data
             self.id = id
             self.nsp = nsp
@@ -62,15 +62,15 @@ struct SnapperPacket {
             self.placeholders = placeholders
             self.binary = binary
     }
-    
-    mutating func addData(data: NSData) -> Bool {
+
+    mutating func addData(_ data: Data) -> Bool {
         if placeholders == currentPlace {
             return true
         }
-        
+
         binary.append(data)
         currentPlace += 1
-        
+
         if placeholders == currentPlace {
             currentPlace = 0
             return true
@@ -78,21 +78,21 @@ struct SnapperPacket {
             return false
         }
     }
-    
-    private func completeMessage(message: String, ack: Bool) -> String {
+
+    fileprivate func completeMessage(_ message: String, ack: Bool) -> String {
         var restOfMessage = ""
-        
+
         if data.count == 0 {
             return message + "]"
         }
-        
+
         for arg in data {
-            if arg is NSDictionary || arg is [AnyObject] {
+            if arg is NSDictionary || arg is [Any] {
                 do {
-                    let jsonSend = try NSJSONSerialization.dataWithJSONObject(arg,
-                        options: NSJSONWritingOptions(rawValue: 0))
-                    let jsonString = NSString(data: jsonSend, encoding: NSUTF8StringEncoding)
-                    
+                    let jsonSend = try JSONSerialization.data(withJSONObject: arg,
+                        options: JSONSerialization.WritingOptions(rawValue: 0))
+                    let jsonString = NSString(data: jsonSend, encoding: String.Encoding.utf8.rawValue)
+
                     restOfMessage += jsonString! as String + ","
                 } catch {
                     DefaultSocketLogger.Logger.error("Error creating JSON object in SocketPacket.completeMessage",
@@ -106,18 +106,18 @@ struct SnapperPacket {
                 restOfMessage += "\(arg),"
             }
         }
-        
+
         if restOfMessage != "" {
-            restOfMessage.removeAtIndex(restOfMessage.endIndex.predecessor())
+            restOfMessage.remove(at: restOfMessage.characters.index(before: restOfMessage.endIndex))
         }
-        
+
         return message + restOfMessage + "]"
     }
-    
-    private func createAck() -> String {
+
+    fileprivate func createAck() -> String {
         let msg: String
-        
-        if type == PacketType.Ack {
+
+        if type == PacketType.ack {
             if nsp == "/" {
                 msg = "3\(id)["
             } else {
@@ -130,15 +130,15 @@ struct SnapperPacket {
                 msg = "6\(binary.count)-\(nsp),\(id)["
             }
         }
-        
+
         return completeMessage(msg, ack: true)
     }
-    
-    
-    private func createMessageForEvent() -> String {
+
+
+    fileprivate func createMessageForEvent() -> String {
         let message: String
-        
-        if type == PacketType.Event {
+
+        if type == PacketType.event {
             if nsp == "/" {
                 if id == -1 {
                     message = "2["
@@ -167,25 +167,25 @@ struct SnapperPacket {
                 }
             }
         }
-        
+
         return completeMessage(message, ack: false)
     }
-    
-    private func createPacketString() -> String {
+
+    fileprivate func createPacketString() -> String {
         let str: String
-        
-        if type == .Event || type == .BinaryEvent {
+
+        if type == .event || type == .binaryEvent {
             str = createMessageForEvent()
         } else {
             str = createAck()
         }
-        
+
         return str
     }
-    
+
     mutating func fillInPlaceholders() {
         for i in 0..<data.count {
-            if let str = data[i] as? String, num = str["~~(\\d)"].groups() {
+            if let str = data[i] as? String, let num = str["~~(\\d)"].groups() {
                 // Fill in binary placeholder with data
                 data[i] = binary[Int(num[1])!]
             } else if data[i] is NSDictionary || data[i] is NSArray {
@@ -193,8 +193,8 @@ struct SnapperPacket {
             }
         }
     }
-    
-    private mutating func _fillInPlaceholders(data: AnyObject) -> AnyObject {
+
+    fileprivate mutating func _fillInPlaceholders(_ data: Any) -> Any {
         if let str = data as? String {
             if let num = str["~~(\\d)"].groups() {
                 return binary[Int(num[1])!]
@@ -203,13 +203,12 @@ struct SnapperPacket {
             }
         } else if let dict = data as? NSDictionary {
             let newDict = NSMutableDictionary(dictionary: dict)
-            
             for (key, value) in dict {
                 newDict[key as! NSCopying] = _fillInPlaceholders(value)
             }
-            
+
             return newDict
-        } else if let arr = data as? [AnyObject] {
+        } else if let arr = data as? [Any] {
             return arr.map({_fillInPlaceholders($0)})
         } else {
             return data
@@ -218,56 +217,56 @@ struct SnapperPacket {
 }
 
 extension SnapperPacket {
-    private static func findType(binCount: Int, ack: Bool) -> PacketType {
+    fileprivate static func findType(_ binCount: Int, ack: Bool) -> PacketType {
         switch binCount {
         case 0 where !ack:
-            return PacketType.Event
+            return PacketType.event
         case 0 where ack:
-            return PacketType.Ack
+            return PacketType.ack
         case _ where !ack:
-            return PacketType.BinaryEvent
+            return PacketType.binaryEvent
         case _ where ack:
-            return PacketType.BinaryAck
+            return PacketType.binaryAck
         default:
-            return PacketType.Error
+            return PacketType.error
         }
     }
-    
-    static func packetFromEmit(items: [AnyObject], id: Int, nsp: String, ack: Bool) -> SnapperPacket {
+
+    static func packetFromEmit(_ items: [Any], id: Int, nsp: String, ack: Bool) -> SnapperPacket {
         let (parsedData, binary) = deconstructData(items)
         let packet = SnapperPacket(type: findType(binary.count, ack: ack), data: parsedData,
             id: id, nsp: nsp, placeholders: -1, binary: binary)
-        
+
         return packet
     }
 }
 
 private extension SnapperPacket {
-    static func shred(data: AnyObject, inout binary: [NSData]) -> AnyObject {
-        if let bin = data as? NSData {
-            let placeholder = ["_placeholder": true, "num": binary.count]
-            
+    static func shred(_ data: Any, binary: inout [Data]) -> Any {
+        if let bin = data as? Data {
+            let placeholder = ["_placeholder": true, "num": binary.count] as [String : Any]
+
             binary.append(bin)
-            
+
             return placeholder
-        } else if let arr = data as? [AnyObject] {
+        } else if let arr = data as? [Any] {
             return arr.map({shred($0, binary: &binary)})
         } else if let dict = data as? NSDictionary {
             let mutDict = NSMutableDictionary(dictionary: dict)
-            
+
             for (key, value) in dict {
                 mutDict[key as! NSCopying] = shred(value, binary: &binary)
             }
-            
+
             return mutDict
         } else {
             return data
         }
     }
-    
-    static func deconstructData(data: [AnyObject]) -> ([AnyObject], [NSData]) {
-        var binary = [NSData]()
-        
+
+    static func deconstructData(_ data: [Any]) -> ([Any], [Data]) {
+        var binary = [Data]()
+
         return (data.map({shred($0, binary: &binary)}), binary)
     }
 }

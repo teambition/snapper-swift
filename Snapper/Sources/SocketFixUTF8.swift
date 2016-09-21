@@ -8,18 +8,18 @@
 
 import Foundation
 
-func fixDoubleUTF8(string: String) -> String {
-    if let utf8 = string.dataUsingEncoding(NSISOLatin1StringEncoding),
-        latin1 = NSString(data: utf8, encoding: NSUTF8StringEncoding) {
+func fixDoubleUTF8(_ string: String) -> String {
+    if let utf8 = string.data(using: String.Encoding.isoLatin1),
+        let latin1 = NSString(data: utf8, encoding: String.Encoding.utf8.rawValue) {
             return latin1 as String
     } else {
         return string
     }
 }
 
-func doubleEncodeUTF8(string: String) -> String {
-    if let latin1 = string.dataUsingEncoding(NSUTF8StringEncoding),
-        utf8 = NSString(data: latin1, encoding: NSISOLatin1StringEncoding) {
+func doubleEncodeUTF8(_ string: String) -> String {
+    if let latin1 = string.data(using: String.Encoding.utf8),
+        let utf8 = NSString(data: latin1, encoding: String.Encoding.isoLatin1.rawValue) {
             return utf8 as String
     } else {
         return string

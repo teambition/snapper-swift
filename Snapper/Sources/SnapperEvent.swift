@@ -14,7 +14,7 @@ import Foundation
     override public var description: String {
         return "SocketAnyEvent: Event: \(event) items: \(items ?? nil)"
     }
-    
+
     init(event: String, items: NSArray?) {
         self.event = event
         self.items = items

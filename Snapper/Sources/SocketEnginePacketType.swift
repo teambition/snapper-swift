@@ -9,5 +9,5 @@
 import Foundation
 
 @objc public enum SocketEnginePacketType: Int {
-    case Open, Close, Ping, Pong, Message, Upgrade, Noop
+    case open, close, ping, pong, message, upgrade, noop
 }
