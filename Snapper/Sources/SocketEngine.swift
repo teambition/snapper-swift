@@ -135,7 +135,7 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
     fileprivate func checkIfMessageIsBase64Binary(_ message: String) -> Bool {
         if message.hasPrefix("b4") {
             // binary in base64 string
-            let noPrefix = message[message.characters.index(message.startIndex, offsetBy: 2)..<message.endIndex]
+            let noPrefix = message[message.index(message.startIndex, offsetBy: 2)..<message.endIndex]
 
             if let data = Data(base64Encoded: noPrefix,
                 options: .ignoreUnknownCharacters) {
@@ -400,8 +400,8 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
 
     fileprivate func parseEngineData(_ data: Data) {
         DefaultSocketLogger.Logger.log("Got binary data: %@", type: "SocketEngine", args: data)
-        
-        client?.parseBinaryData(data.subdata(in: Range(uncheckedBounds: (lower: 1, upper: data.count - 1))))
+
+        client?.parseBinaryData(data.subdata(in: 1..<data.endIndex))
     }
 
     fileprivate func parseEngineMessage(_ message: String, fromPolling: Bool) {
@@ -426,13 +426,13 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
 
         switch type {
         case .message:
-            handleMessage(fixedString[fixedString.characters.index(after: fixedString.startIndex)..<fixedString.endIndex])
+            handleMessage(String(fixedString.characters.dropFirst()))
         case .noop:
             handleNOOP()
         case .pong:
             handlePong(fixedString)
         case .open:
-            handleOpen(fixedString[fixedString.characters.index(after: fixedString.startIndex)..<fixedString.endIndex])
+            handleOpen(String(fixedString.characters.dropFirst()))
         case .close:
             handleClose(fixedString)
         default:

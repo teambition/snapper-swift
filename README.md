@@ -1,5 +1,5 @@
 # Snapper-swift
-Snapper-core client by Swift 2.0 for iOS/OS X
+Snapper-core client by Swift 3.0 for iOS/OS X
 
 [![Build Status](https://travis-ci.org/socketio/socket.io-client-swift.svg?branch=master)](https://travis-ci.org/socketio/socket.io-client-swift)
 
