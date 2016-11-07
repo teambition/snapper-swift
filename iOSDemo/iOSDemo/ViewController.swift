@@ -11,8 +11,8 @@ import Snapper
 
 class ViewController: UIViewController {
 
-    //let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.secure(false), .log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NjY5MDU3MzUsInVzZXJJZCI6IjU2OTg2ZDQzNTQyY2UxYTI3OThjOGNmYiIsInNvdXJjZSI6InRlYW1iaXRpb24ifQ.QycjEWs95wjdn-xrnDciEFyU6F5sMHhFhSMtASVj-_c"])])
-    let snapper = SnapperClient(socketURL: "push.teambition.com/websocket", options: [.log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NzQ2MDE5NjUsInVzZXJJZCI6IjUzZGI0ZDA3ZjhiNzIyYjM3NTU1MWQ2ZSIsInNvdXJjZSI6InRlYW1iaXRpb24ifQ.UiH7TWdsd6qSzUiYHyMpH9C077tvDjE0i3LAoIu6Rrc"]), .secure(true)])
+    //let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.secure(false), .log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0Nzg2Nzc5NzIsInVzZXJJZCI6IjU3Yzk1Yjk0NWE5OTkwZmI0ODAwN2YxZSIsInNvdXJjZSI6InRlYW1iaXRpb24ifQ.GEkp9KlCQqGKL1Ku0-vZdLTynM_SGqQK25KYC72B9J0"])])
+    let snapper = SnapperClient(socketURL: "push.teambition.com/websocket", options: [.log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0Nzg3MTA1NzcsInVzZXJJZCI6IjUyYTZjYzJkZWY2NmJjOTgwYzAwMDMxMiIsInNvdXJjZSI6InRlYW1iaXRpb24ifQ.9B95rV62HHqoWMD74_BdKcpf6YL5hM7rodDN-Aq8ISo"]), .secure(true)])
     
     override func viewDidLoad() {
         super.viewDidLoad()

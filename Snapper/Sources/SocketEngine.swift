@@ -594,7 +594,8 @@ extension SocketEngine {
             if this.fastUpgrade {
                 this.doFastUpgrade()
             } else if !this.closed && this.polling {
-                this.doPoll()
+                guard let engine = self else { return }
+                engine.doPoll()
             }
         }
     }

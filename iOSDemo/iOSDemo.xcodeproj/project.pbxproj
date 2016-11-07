@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8630F0EB1D9231FB00B8B7EF /* Snapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8630F0EA1D9231FB00B8B7EF /* Snapper.framework */; };
-		8630F0EC1D9231FB00B8B7EF /* Snapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8630F0EA1D9231FB00B8B7EF /* Snapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		ACBD29BD1DD063170063629F /* Snapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACBD29BC1DD063170063629F /* Snapper.framework */; };
+		ACBD29BE1DD063170063629F /* Snapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ACBD29BC1DD063170063629F /* Snapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E5A2B9201C2A4D2800D95012 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A2B91F1C2A4D2800D95012 /* AppDelegate.swift */; };
 		E5A2B9221C2A4D2800D95012 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A2B9211C2A4D2800D95012 /* ViewController.swift */; };
 		E5A2B9251C2A4D2800D95012 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E5A2B9231C2A4D2800D95012 /* Main.storyboard */; };
@@ -23,7 +23,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8630F0EC1D9231FB00B8B7EF /* Snapper.framework in Embed Frameworks */,
+				ACBD29BE1DD063170063629F /* Snapper.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -31,7 +31,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		8630F0EA1D9231FB00B8B7EF /* Snapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Snapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACBD29BC1DD063170063629F /* Snapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Snapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5A2B91C1C2A4D2800D95012 /* iOSDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5A2B91F1C2A4D2800D95012 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E5A2B9211C2A4D2800D95012 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -46,7 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8630F0EB1D9231FB00B8B7EF /* Snapper.framework in Frameworks */,
+				ACBD29BD1DD063170063629F /* Snapper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,7 +56,7 @@
 		E5A2B9131C2A4D2800D95012 = {
 			isa = PBXGroup;
 			children = (
-				8630F0EA1D9231FB00B8B7EF /* Snapper.framework */,
+				ACBD29BC1DD063170063629F /* Snapper.framework */,
 				E5A2B91E1C2A4D2800D95012 /* iOSDemo */,
 				E5A2B91D1C2A4D2800D95012 /* Products */,
 			);
