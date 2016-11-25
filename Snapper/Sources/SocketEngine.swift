@@ -547,9 +547,13 @@ extension SocketEngine {
         if websocket || waitingForPoll || !connected || closed {
             return
         }
+        
+        guard let pollingURL = URL(string: urlPolling + "&sid=\(sid)&b64=1") else {
+            return
+        }
 
         waitingForPoll = true
-        let req = NSMutableURLRequest(url: URL(string: urlPolling + "&sid=\(sid)&b64=1")!)
+        let req = NSMutableURLRequest(url: pollingURL)
 
         addHeaders(req)
         doLongPoll(req)
@@ -594,8 +598,8 @@ extension SocketEngine {
             if this.fastUpgrade {
                 this.doFastUpgrade()
             } else if !this.closed && this.polling {
-                guard let engine = self else { return }
-                engine.doPoll()
+                guard let strongSelf = self else { return }
+                strongSelf.doPoll()
             }
         }
     }
