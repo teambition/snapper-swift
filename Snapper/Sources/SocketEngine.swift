@@ -395,7 +395,7 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
             }
         }
 
-        doLongPoll(reqPolling)
+        doLongPoll(reqPolling as URLRequest)
     }
 
     fileprivate func parseEngineData(_ data: Data) {
@@ -530,17 +530,21 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
 
 // Polling methods
 extension SocketEngine {
-    fileprivate func addHeaders(_ req: NSMutableURLRequest) {
+    fileprivate func addHeaders(for req: URLRequest) -> URLRequest {
+        var req = req
+        
         if cookies != nil {
             let headers = HTTPCookie.requestHeaderFields(with: cookies!)
             req.allHTTPHeaderFields = headers
         }
-
+        
         if extraHeaders != nil {
             for (headerName, value) in extraHeaders! {
                 req.setValue(value, forHTTPHeaderField: headerName)
             }
         }
+        
+        return req
     }
 
     fileprivate func doPoll() {
@@ -553,25 +557,26 @@ extension SocketEngine {
         }
 
         waitingForPoll = true
-        let req = NSMutableURLRequest(url: pollingURL)
+        var req = URLRequest(url: pollingURL)
 
-        addHeaders(req)
+        req = addHeaders(for: req)
         doLongPoll(req)
     }
 
-    fileprivate func doRequest(_ req: NSMutableURLRequest, withCallback callback: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    fileprivate func doRequest(_ req: URLRequest, withCallback callback: @escaping (Data?, URLResponse?, Error?) -> Void) {
         if !polling || closed || invalidated {
             DefaultSocketLogger.Logger.error("Tried to do polling request when not supposed to", type: logType)
             return
         }
 
         DefaultSocketLogger.Logger.log("Doing polling request", type: logType)
-
+        
+        var req = req
         req.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-        session?.dataTask(with: (req as URLRequest), completionHandler: callback).resume()
+        session?.dataTask(with: req, completionHandler: callback).resume()
     }
 
-    fileprivate func doLongPoll(_ req: NSMutableURLRequest) {
+    fileprivate func doLongPoll(_ req: URLRequest) {
         doRequest(req) {[weak self] data, res, err in
             guard let this = self else {return}
 
@@ -598,8 +603,7 @@ extension SocketEngine {
             if this.fastUpgrade {
                 this.doFastUpgrade()
             } else if !this.closed && this.polling {
-                guard let strongSelf = self else { return }
-                strongSelf.doPoll()
+                this.doPoll()
             }
         }
     }
@@ -622,9 +626,9 @@ extension SocketEngine {
 
         postWait.removeAll(keepingCapacity: false)
 
-        let req = NSMutableURLRequest(url: URL(string: urlPolling + "&sid=\(sid)")!)
+        var req = URLRequest(url: URL(string: urlPolling + "&sid=\(sid)")!)
 
-        addHeaders(req)
+        req = addHeaders(for: req)
 
         req.httpMethod = "POST"
         req.setValue("text/plain; charset=UTF-8", forHTTPHeaderField: "Content-Type")
