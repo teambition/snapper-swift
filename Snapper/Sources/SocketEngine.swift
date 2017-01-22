@@ -30,7 +30,7 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
     fileprivate let logType = "SocketEngine"
     fileprivate let parseQueue = DispatchQueue(label: "com.socketio.engineParseQueue", attributes: [])
     fileprivate let url: String
-    fileprivate let workQueue = OperationQueue()
+    fileprivate let workQueue = OperationQueue.main
 
     fileprivate var connectParams: [String: Any]?
     fileprivate var closed = false
@@ -578,7 +578,7 @@ extension SocketEngine {
 
     fileprivate func doLongPoll(_ req: URLRequest) {
         doRequest(req) {[weak self] data, res, err in
-            guard let this = self else {return}
+            guard let this = self, this.polling else {return}
 
             if err != nil || data == nil {
                 DefaultSocketLogger.Logger.error(err?.localizedDescription ?? "Error", type: this.logType)
