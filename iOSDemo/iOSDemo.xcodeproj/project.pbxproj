@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AC0041AD1E34A3C400A157B6 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0041AC1E34A3C400A157B6 /* SocketManager.swift */; };
 		ACBD29BD1DD063170063629F /* Snapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACBD29BC1DD063170063629F /* Snapper.framework */; };
 		ACBD29BE1DD063170063629F /* Snapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = ACBD29BC1DD063170063629F /* Snapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E5A2B9201C2A4D2800D95012 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A2B91F1C2A4D2800D95012 /* AppDelegate.swift */; };
@@ -31,6 +32,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AC0041AC1E34A3C400A157B6 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
 		ACBD29BC1DD063170063629F /* Snapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Snapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5A2B91C1C2A4D2800D95012 /* iOSDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5A2B91F1C2A4D2800D95012 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 			children = (
 				E5A2B91F1C2A4D2800D95012 /* AppDelegate.swift */,
 				E5A2B9211C2A4D2800D95012 /* ViewController.swift */,
+				AC0041AC1E34A3C400A157B6 /* SocketManager.swift */,
 				E5A2B9231C2A4D2800D95012 /* Main.storyboard */,
 				E5A2B9261C2A4D2800D95012 /* Assets.xcassets */,
 				E5A2B9281C2A4D2800D95012 /* LaunchScreen.storyboard */,
@@ -175,6 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E5A2B9221C2A4D2800D95012 /* ViewController.swift in Sources */,
+				AC0041AD1E34A3C400A157B6 /* SocketManager.swift in Sources */,
 				E5A2B9201C2A4D2800D95012 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

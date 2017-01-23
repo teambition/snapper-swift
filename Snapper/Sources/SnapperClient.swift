@@ -379,6 +379,13 @@ public final class SnapperClient: NSObject, SocketEngineClient {
 
             return
         }
+        
+        guard status == .reconnecting else {
+            DefaultSocketLogger.Logger.log("****do tryReconnect when status is not reconnecting****", type: logType)
+            return
+        }
+        DefaultSocketLogger.Logger.log("****do tryReconnect when status is reconnecting****", type: logType)
+
 
         if reconnectAttempts != -1 && currentReconnectAttempt + 1 > reconnectAttempts || !reconnects {
             clearReconnectTimer()
