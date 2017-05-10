@@ -310,7 +310,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
 
         let dict = ["id":id, "result":"OK", "jsonrpc":"2.0"] as [String : Any]
         let data = try! JSONSerialization.data(withJSONObject: dict, options: [])
-        let json = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as! String
+        let json = String(data: data, encoding: .utf8)!
         engine?.write(json, withType: .message, withData: [])
     }
 

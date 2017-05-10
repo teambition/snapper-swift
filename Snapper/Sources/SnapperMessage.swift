@@ -12,7 +12,7 @@ open class SnapperMessage: NSObject {
     open let message: String!
     open let items: NSArray?
     override open var description: String {
-        return "SocketAnyEvent: Event: \(message) items: \(items ?? nil)"
+        return "SocketAnyEvent: Event: \(message) items: \(String(describing: items ?? nil))"
     }
 
     init(id: Any, message: String, items: NSArray?) {

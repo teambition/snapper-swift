@@ -632,7 +632,7 @@ public class WebSocket : NSObject, StreamDelegate {
             if !isControlFrame && (receivedOpcode != .binaryFrame && receivedOpcode != .continueFrame &&
                 receivedOpcode != .textFrame && receivedOpcode != .pong) {
                 let errCode = CloseCode.protocolError.rawValue
-                doDisconnect(errorWithDetail("unknown opcode: \(receivedOpcode)", code: errCode))
+                doDisconnect(errorWithDetail("unknown opcode: \(String(describing: receivedOpcode))", code: errCode))
                 writeError(errCode)
                 return emptyBuffer
             }

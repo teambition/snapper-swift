@@ -34,10 +34,10 @@ final class SocketManager {
             self.snapper = nil
         }
         
-        //let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.secure(false), .log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0Nzg2Nzc5NzIsInVzZXJJZCI6IjU3Yzk1Yjk0NWE5OTkwZmI0ODAwN2YxZSIsInNvdXJjZSI6InRlYW1iaXRpb24ifQ.GEkp9KlCQqGKL1Ku0-vZdLTynM_SGqQK25KYC72B9J0"])])
-        let snapper = SnapperClient(socketURL: "push.teambition.com/websocket", options: [.log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0ODUzMTI4NjksInVzZXJJZCI6IjUyYTZjYzJkZWY2NmJjOTgwYzAwMDMxMiIsInNvdXJjZSI6InRlYW1iaXRpb24ifQ.9oUN0oA6y7Q43XvopR9GTnKVTShlA5UAEHetABeQy30"]), .secure(true)])
+//        let snapper = SnapperClient(socketURL: "snapper.project.bi/websocket", options: [.secure(false), .log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTQ0OTkwMDAsInVzZXJJZCI6IjU1YzA1Zjk2NzA0ZmI4ZjI1ZGNmNmMyNSIsInNvdXJjZSI6ImlvcyJ9.pLi4GjFGh3DAbSYcuoqr7eEFKrZiTf-eTgKb2ewtJIw"])])
+        let snapper = SnapperClient(socketURL: "push.teambition.com/websocket", options: [.log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0OTQ0NzY0NTgsInVzZXJJZCI6IjU0MjU0MmZmODgyYTZjNzAwYmI5MzA2YiIsInNvdXJjZSI6ImlvcyJ9.Wo1S93roKzdFuIeEpZDLqrKuwhJ1nnZ0Cf_VZ48ENi0"]), .secure(true)])
         snapper.on("connect") { (data) -> Void in
-            print("connenct \(self.snapper?.status)")
+            print("connenct \(String(describing: self.snapper?.status))")
         }
         
         snapper.on("error") { (data) -> Void in
@@ -53,7 +53,7 @@ final class SocketManager {
         }
         
         snapper.message { (message: SnapperMessage) -> Void in
-            print("\(message.items?.count)")
+            print("\(String(describing: message.items?.count))")
             
             self.snapper?.replay(message.id)
         }

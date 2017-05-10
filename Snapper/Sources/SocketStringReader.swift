@@ -28,8 +28,10 @@ struct SocketStringReader {
     }
 
     mutating func read(readLength: Int) -> String {
-        let readString = message[currentIndex..<message.index(currentIndex, offsetBy: readLength)]
-        advanceIndexBy(readLength)
+        let maxDistance = message.distance(from: currentIndex, to: message.endIndex)
+        let maxReadLength = min(maxDistance, readLength)
+        let readString = message[currentIndex..<message.index(currentIndex, offsetBy: maxReadLength)]
+        advanceIndexBy(maxReadLength)
 
         return readString
     }
