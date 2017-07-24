@@ -30,7 +30,6 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
     fileprivate let logType = "SocketEngine"
     fileprivate let parseQueue = DispatchQueue(label: "com.socketio.engineParseQueue", attributes: [])
     fileprivate let url: String
-    fileprivate let workQueue = OperationQueue.main
 
     fileprivate var connectParams: [String: Any]?
     fileprivate var closed = false
@@ -405,7 +404,11 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
     }
 
     fileprivate func parseEngineMessage(_ message: String, fromPolling: Bool) {
-        DefaultSocketLogger.Logger.log("Got message: %@", type: logType, args: message)
+        if fromPolling {
+            DefaultSocketLogger.Logger.log("Got message: %@  from polling", type: logType, args: message)
+        } else {
+            DefaultSocketLogger.Logger.log("Got message: %@ from ws", type: logType, args: message)
+        }
 
         let reader = SocketStringReader(message: message)
         let fixedString: String
@@ -448,6 +451,9 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
 
 
     fileprivate func resetEngine() {
+        let queue = OperationQueue()
+        queue.underlyingQueue = handleQueue
+        
         closed = false
         connected = false
         fastUpgrade = false
@@ -456,7 +462,7 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
         invalidated = false
         session = URLSession(configuration: .default,
             delegate: sessionDelegate,
-            delegateQueue: workQueue)
+            delegateQueue: queue)
         sid = ""
         waitingForPoll = false
         waitingForPost = false
@@ -500,10 +506,10 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
 
     fileprivate func upgradeTransport() {
         if websocketConnected {
-            DefaultSocketLogger.Logger.log("Upgrading transport to WebSockets", type: logType)
+            DefaultSocketLogger.Logger.log("\(Thread.current) Upgrading transport to WebSockets", type: logType)
 
             fastUpgrade = true
-            sendPollMessage("", withType: .noop)
+            //sendPollMessage("", withType: .noop)
             // After this point, we should not send anymore polling messages
         }
     }
@@ -578,7 +584,8 @@ extension SocketEngine {
 
     fileprivate func doLongPoll(_ req: URLRequest) {
         doRequest(req) {[weak self] data, res, err in
-            guard let this = self, this.polling else {return}
+            guard let this = self, this.polling else { return }
+            DefaultSocketLogger.Logger.log("Got polling response", type: this.logType)
 
             if err != nil || data == nil {
                 DefaultSocketLogger.Logger.error(err?.localizedDescription ?? "Error", type: this.logType)
@@ -589,8 +596,6 @@ extension SocketEngine {
 
                 return
             }
-
-            DefaultSocketLogger.Logger.log("Got polling response", type: this.logType)
 
             if let str = String(data: data!, encoding: String.Encoding.utf8) {
                 this.parseQueue.async {
@@ -645,6 +650,7 @@ extension SocketEngine {
 
         doRequest(req) {[weak self] data, res, err in
             guard let this = self else {return}
+            DefaultSocketLogger.Logger.log("Got polling response for flushWaitingForPost", type: this.logType)
 
             if err != nil {
                 DefaultSocketLogger.Logger.error(err?.localizedDescription ?? "Error", type: this.logType)

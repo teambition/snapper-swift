@@ -41,11 +41,10 @@ class SnapperParser {
                     return .left("Invalid packet type")
                 }
 
-                if let params = json["params"] as? [String] {
+                if let params = json["params"] as? [NSDictionary] {
                     do {
                         try params.forEach({ (param) in
-                            let paramsData = param.data(using: String.Encoding.utf8, allowLossyConversion: false)
-                            if let data = paramsData {
+                            if let dataString = param["data"] as? String, let data = dataString.data(using: String.Encoding.utf8, allowLossyConversion: false) {
                                 let paramsArray =  try JSONSerialization.jsonObject(with: data, options: .allowFragments)
                                 tempArray.append(paramsArray)
                             }

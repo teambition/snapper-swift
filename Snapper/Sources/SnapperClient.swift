@@ -297,11 +297,11 @@ public final class SnapperClient: NSObject, SocketEngineClient {
     }
 
     /**
-     replay
+     reply
 
      - parameter id: message id
      */
-    public func replay(_ id: Any) {
+    public func reply(_ id: Any) {
 
         guard status == .connected else {
             handleEvent("error", data: ["Tried emitting when not connected"], isInternalMessage: true)
