@@ -34,11 +34,17 @@ final class SocketManager {
             self.snapper = nil
         }
         
-      // let snapper = SnapperClient(socketURL: "messaging.project.ci/websocket", options: [.secure(false), .log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJRCI6IjU4Zjk1ZTkyYzA2YTU0NmY3ZGFiNzNjNyIsImV4cCI6MTUwMTU3MTA2NCwic291cmNlIjoiaW9zIiwidXNlcklkIjoiNTdjOTViOTQ1YTk5OTBmYjQ4MDA3ZjFlIn0.qQuVVQYanYYIPJvZQOC9-ls-w6zYLdd_-bMAoinW2bQ"])])
-        let snapper = SnapperClient(socketURL: "messaging.teambition.net/websocket", options: [.log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJRCI6IjU5MzdiMTBiODM5NjMyMDA0NDRiMWZmOCIsImV4cCI6MTUwMTU3MzIyMSwic291cmNlIjoiaW9zIiwidXNlcklkIjoiNTJhNmNjMmRlZjY2YmM5ODBjMDAwMzEyIn0.0BIV0dIVUph3Sa0WW3YavtiLN6Pp7UvL4-W9gLUO_Uo"]), .secure(true)])
+        let snapper = SnapperClient(socketURL: "messaging.project.ci/websocket", options: [.secure(false), .log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJRCI6IjU4Zjk1ZTkyYzA2YTU0NmY3ZGFiNzNjNyIsImV4cCI6MTUwMTU3MTA2NCwic291cmNlIjoiaW9zIiwidXNlcklkIjoiNTdjOTViOTQ1YTk5OTBmYjQ4MDA3ZjFlIn0.qQuVVQYanYYIPJvZQOC9-ls-w6zYLdd_-bMAoinW2bQ"])])
+//        let snapper = SnapperClient(socketURL: "messaging.teambition.net/websocket", options: [.log(true), .connectParams(["token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJRCI6IjU5MzdiMTBiODM5NjMyMDA0NDRiMWZmOCIsImV4cCI6MTUwMTU3MzIyMSwic291cmNlIjoiaW9zIiwidXNlcklkIjoiNTJhNmNjMmRlZjY2YmM5ODBjMDAwMzEyIn0.0BIV0dIVUph3Sa0WW3YavtiLN6Pp7UvL4-W9gLUO_Uo"]), .secure(true)])
         
         snapper.on("connect") { (data) -> Void in
             print("connenct \(String(describing: self.snapper?.status))")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+                self.snapper?.refreshToken(completion: { (newToken) in
+                    print("new TCM Token: \(newToken)")
+                })
+            })
         }
         
         snapper.on("error") { (data) -> Void in
@@ -55,7 +61,6 @@ final class SocketManager {
         
         snapper.message { (message: SnapperMessage) -> Void in
             print("\(String(describing: message.items?.count))")
-            
             self.snapper?.reply(message.id)
         }
         

@@ -11,6 +11,7 @@ import Foundation
 public typealias AckCallback = ([Any]) -> Void
 public typealias NormalCallback = (Any) -> Void
 public typealias messageCallback = ((SnapperMessage) -> Void)
+public typealias RefreshTokenCallback = (String) -> Void
 public typealias OnAckCallback = (_ timeoutAfter: UInt64, _ callback: AckCallback) -> Void
 
 enum Either<E, V> {

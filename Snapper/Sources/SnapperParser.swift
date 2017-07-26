@@ -21,6 +21,8 @@ class SnapperParser {
             socket.didError(pack.data)
         case .message:
             socket.didReceiveMessage(pack.message!)
+        case .refreshToken:
+            socket.didRefreshToken(pack.refreshToken!)
         default:
             DefaultSocketLogger.Logger.log("Got invalid packet: %@", type: "SocketParser", args: pack.description)
         }
@@ -35,12 +37,21 @@ class SnapperParser {
             var tempArray = [Any]()
             if let json = try JSONSerialization.jsonObject(with: messageData,
                 options: JSONSerialization.ReadingOptions.allowFragments) as? NSDictionary {
-                var packet = SnapperPacket(type: .message, nsp: "Message")
-
+                
                 guard let id = json["id"] else {
                     return .left("Invalid packet type")
                 }
+                
+                guard let packetID = id as? String, packetID != SnapperClient.refreshTokenID else {
+                    var packet = SnapperPacket(type: .refreshToken, nsp: "Message")
+                    if let newToken = json["result"] as? String {
+                        packet.refreshToken = newToken
+                        return .right(packet)
+                    }
+                    return .left("Invalid packet type for refreshToken")
+                }
 
+                var packet = SnapperPacket(type: .message, nsp: "Message")
                 if let params = json["params"] as? [NSDictionary] {
                     do {
                         try params.forEach({ (param) in

@@ -35,6 +35,7 @@ public final class SnapperClient: NSObject, SocketEngineClient {
 
     fileprivate var anyHandler: ((SnapperEvent) -> Void)?
     fileprivate var messageHandler: messageCallback?
+    fileprivate var refreshTokenHandler: RefreshTokenCallback?
     fileprivate var currentReconnectAttempt = 0
     fileprivate var handlers = [SnapperEventHandler]()
     fileprivate var connectParams: [String: Any]?
@@ -45,6 +46,8 @@ public final class SnapperClient: NSObject, SocketEngineClient {
     fileprivate(set) var reconnectAttempts = -1
 
     var waitingData = [SnapperPacket]()
+    
+    static let refreshTokenID = "refreshTokenID"
 
     /**
      Type safe way to create a new Snapper. opts can be omitted
@@ -172,6 +175,12 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         // Don't handle as internal because something crazy could happen where
         // we disconnect before it's handled
         handleEvent("connect", data: [], isInternalMessage: false)
+    }
+    
+    func didRefreshToken(_ newToken: String) {
+        if let handle = refreshTokenHandler {
+            handle(newToken)
+        }
     }
 
     func didDisconnect(_ reason: String) {
@@ -309,6 +318,19 @@ public final class SnapperClient: NSObject, SocketEngineClient {
         }
 
         let dict = ["id":id, "result":"OK", "jsonrpc":"2.0"] as [String : Any]
+        let data = try! JSONSerialization.data(withJSONObject: dict, options: [])
+        let json = String(data: data, encoding: .utf8)!
+        engine?.write(json, withType: .message, withData: [])
+    }
+    
+    public func refreshToken(completion: @escaping RefreshTokenCallback) {
+        guard status == .connected else {
+            handleEvent("error", data: ["Tried emitting when not connected"], isInternalMessage: true)
+            return
+        }
+        
+        refreshTokenHandler = completion
+        let dict = ["id": SnapperClient.refreshTokenID, "method":"refresh_token", "jsonrpc":"2.0"] as [String : Any]
         let data = try! JSONSerialization.data(withJSONObject: dict, options: [])
         let json = String(data: data, encoding: .utf8)!
         engine?.write(json, withType: .message, withData: [])

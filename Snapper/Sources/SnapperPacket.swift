@@ -19,7 +19,7 @@ struct SnapperPacket {
     let type: PacketType
 
     enum PacketType: Int {
-        case connect, disconnect, event, ack, error, binaryEvent, binaryAck, message
+        case connect, disconnect, event, ack, error, binaryEvent, binaryAck, message, refreshToken
     }
 
     var args: [Any]? {
@@ -52,6 +52,8 @@ struct SnapperPacket {
     var packetString: String {
         return createPacketString()
     }
+    
+    var refreshToken: String?
 
     init(type: SnapperPacket.PacketType, data: [Any] = [Any](), id: Int = -1,
         nsp: String, placeholders: Int = 0, binary: [Data] = [Data]()) {
