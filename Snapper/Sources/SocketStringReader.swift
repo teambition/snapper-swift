@@ -23,31 +23,34 @@ struct SocketStringReader {
         currentIndex = message.startIndex
     }
 
-    mutating func advanceIndexBy(_ length: Int) {
-        currentIndex = message.index(currentIndex, offsetBy: length)
+    @discardableResult
+    mutating func advance(by: Int) -> String.UTF16View.Index {
+        currentIndex = message.utf16.index(currentIndex, offsetBy: by)
+        return currentIndex
     }
 
     mutating func read(readLength: Int) -> String {
         let maxDistance = message.distance(from: currentIndex, to: message.endIndex)
         let maxReadLength = min(maxDistance, readLength)
         let readString = message[currentIndex..<message.index(currentIndex, offsetBy: maxReadLength)]
-        advanceIndexBy(maxReadLength)
+        
+        advance(by: maxReadLength)
 
-        return readString
+        return String(readString)
     }
 
     mutating func readUntilStringOccurence(string: String) -> String {
-        let substring = message[currentIndex..<message.endIndex]
-        guard let foundRange = substring.range(of: string) else {
-            currentIndex = message.endIndex
-
-            return substring
+        let substring = message.utf16[currentIndex..<message.utf16.endIndex]
+        
+        guard let foundIndex = substring.index(of: string.utf16.first!) else {
+            currentIndex = message.utf16.endIndex
+            
+            return String(substring)!
         }
-
-        let distance = message.distance(from: message.startIndex, to: foundRange.lowerBound) + 1
-        advanceIndexBy(distance)
-
-        return substring.substring(to: foundRange.lowerBound)
+        
+        advance(by: substring.distance(from: substring.startIndex, to: foundIndex) + 1)
+        
+        return String(substring[substring.startIndex..<foundIndex])!
     }
 
     mutating func readUntilEnd() -> String {
