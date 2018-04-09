@@ -110,7 +110,7 @@ struct SnapperPacket {
         }
 
         if restOfMessage != "" {
-            restOfMessage.remove(at: restOfMessage.characters.index(before: restOfMessage.endIndex))
+            restOfMessage.remove(at: restOfMessage.index(before: restOfMessage.endIndex))
         }
 
         return message + restOfMessage + "]"

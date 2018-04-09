@@ -34,7 +34,7 @@ public enum SnapperClientOption: ClientOption {
 
     public var description: String {
         if let label = Mirror(reflecting: self).children.first?.label {
-            return String(label[label.startIndex]).lowercased() + String(label.characters.dropFirst())
+            return String(label[label.startIndex]).lowercased() + String(label.dropFirst())
         } else {
             return ""
         }
