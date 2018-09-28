@@ -12,7 +12,7 @@ import Foundation
     public let event: String!
     public let items: NSArray?
     override public var description: String {
-        return "SocketAnyEvent: Event: \(event) items: \(String(describing: items ?? nil))"
+        return "SocketAnyEvent: Event: \(String(describing: event)) items: \(String(describing: items ?? nil))"
     }
 
     init(event: String, items: NSArray?) {

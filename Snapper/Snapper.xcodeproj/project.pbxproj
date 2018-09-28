@@ -227,7 +227,7 @@
 				TargetAttributes = {
 					E5A2B8F21C2A4C7B00D95012 = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = "";
 					};
 					E5C5F2351C2B9833008D1286 = {
 						CreatedOnToolsVersion = 7.2;
@@ -468,8 +468,7 @@
 				PRODUCT_NAME = Snapper;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -488,8 +487,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.Snapper;
 				PRODUCT_NAME = Snapper;
 				SKIP_INSTALL = YES;
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
