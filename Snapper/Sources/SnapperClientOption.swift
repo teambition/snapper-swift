@@ -39,11 +39,11 @@ public enum SnapperClientOption: ClientOption {
             return ""
         }
     }
-
-    public var hashValue: Int {
-        return description.hashValue
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(description.hashValue)
     }
-
+    
     static func keyValueToSocketIOClientOption(_ key: String, value: Any) -> SnapperClientOption? {
         switch (key, value) {
         case ("connectParams", let params as [String: Any]):

@@ -121,13 +121,13 @@
 					E5A2B91B1C2A4D2800D95012 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 7NLBE99QC4;
-						LastSwiftMigration = "";
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
 			buildConfigurationList = E5A2B9171C2A4D2800D95012 /* Build configuration list for PBXProject "iOSDemo" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -316,7 +316,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.iOSDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -329,7 +329,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.harrieschen.iOSDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
