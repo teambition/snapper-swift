@@ -137,7 +137,7 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
             // binary in base64 string
             let noPrefix = message[message.index(message.startIndex, offsetBy: 2)..<message.endIndex]
 
-            if let data = Data(base64Encoded: noPrefix,
+            if let data = Data(base64Encoded: String(noPrefix),
                 options: .ignoreUnknownCharacters) {
                     client?.parseBinaryData(data)
             }
@@ -426,13 +426,13 @@ public final class SocketEngine: NSObject, SocketEngineSpec, WebSocketDelegate {
 
         switch type {
         case .message:
-            handleMessage(String(fixedString.characters.dropFirst()))
+            handleMessage(String(fixedString.dropFirst()))
         case .noop:
             handleNOOP()
         case .pong:
             handlePong(fixedString)
         case .open:
-            handleOpen(String(fixedString.characters.dropFirst()))
+            handleOpen(String(fixedString.dropFirst()))
         case .close:
             handleClose(fixedString)
         default:
@@ -619,7 +619,7 @@ extension SocketEngine {
         var postStr = ""
 
         for packet in postWait {
-            let len = packet.characters.count
+            let len = packet.count
 
             postStr += "\(len):\(packet)"
         }
@@ -680,7 +680,7 @@ extension SocketEngine {
     }
 
     func parsePollingMessage(_ str: String) {
-        guard str.characters.count != 1 else {
+        guard str.count != 1 else {
             return
         }
 

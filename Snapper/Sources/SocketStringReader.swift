@@ -33,7 +33,7 @@ struct SocketStringReader {
         let readString = message[currentIndex..<message.index(currentIndex, offsetBy: maxReadLength)]
         advanceIndexBy(maxReadLength)
 
-        return readString
+        return String(readString)
     }
 
     mutating func readUntilStringOccurence(string: String) -> String {
@@ -41,7 +41,7 @@ struct SocketStringReader {
         guard let foundRange = substring.range(of: string) else {
             currentIndex = message.endIndex
 
-            return substring
+            return String(substring)
         }
 
         let distance = message.distance(from: message.startIndex, to: foundRange.lowerBound) + 1
