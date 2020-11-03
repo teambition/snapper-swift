@@ -4,7 +4,7 @@
 #     
 
 Pod::Spec.new do |s|
-  s.name             = 'Snapper-swift'
+  s.name             = 'snapper-swift'
   s.version          = '4.0.1'
   s.summary          = 'Snapper-core client by Swift for iOS/OS X'
   s.description      = <<-DESC
